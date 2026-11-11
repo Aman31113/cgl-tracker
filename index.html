@@ -4,6 +4,7 @@
 <meta charset="utf-8">
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#EEF2F0" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#101614" media="(prefers-color-scheme: dark)">
@@ -1035,9 +1036,47 @@ let snapshots = [];
 let isRemoteUpdate = false; // Flag to prevent infinite sync loops
 const save = { status: "saved", at: null, err: null, timer: null };
 
+/* ================= login (username + password, accounts are made in the Firebase console) ================= */
+const Auth = {
+  user: null,
+  email(u) { u = (u || "").trim().toLowerCase().replace(/\s+/g, ""); return u.includes("@") ? u : u + "@cgltracker.app"; },
+  name() { return this.user ? (this.user.email || "").replace(/@cgltracker\.app$/, "") : ""; },
+  async require() {
+    let u = await new Promise(res => { const un = firebase.auth().onAuthStateChanged(x => { un(); res(x); }); });
+    if (!u) u = await this.loginScreen();
+    this.user = u;
+  },
+  loginScreen() {
+    return new Promise(resolve => {
+      const inp = "width:100%;padding:12px;margin-top:6px;border:1px solid #9a9a9a;border-radius:10px;font:inherit;background:transparent;color:inherit;box-sizing:border-box";
+      document.getElementById("app").innerHTML = `<div style="max-width:380px;margin:0 auto;padding:56px 18px;font-family:system-ui,sans-serif">
+        <h1 style="margin:0 0 6px">CGL plan</h1><p style="margin:0 0 22px;opacity:.75">Sign in to open your plan.</p>
+        <label>Username<input id="lg-u" autocomplete="username" autocapitalize="none" style="${inp}"></label>
+        <label style="display:block;margin-top:14px">Password<input id="lg-p" type="password" autocomplete="current-password" style="${inp}"></label>
+        <p id="lg-e" role="alert" style="color:#c0392b;margin:12px 0 0" hidden></p>
+        <button id="lg-b" style="width:100%;margin-top:18px;padding:13px;font:inherit;font-weight:600;border:0;border-radius:10px;background:#1f7a5c;color:#fff;cursor:pointer">Sign in</button></div>`;
+      const b = document.getElementById("lg-b"), e = document.getElementById("lg-e"), U = document.getElementById("lg-u"), P = document.getElementById("lg-p");
+      const go = async () => {
+        if (!U.value.trim() || !P.value) { e.hidden = false; e.textContent = "Enter your username and password."; return; }
+        b.disabled = true; b.textContent = "Signing in…"; e.hidden = true;
+        try { const r = await firebase.auth().signInWithEmailAndPassword(Auth.email(U.value), P.value); resolve(r.user); }
+        catch (x) {
+          const c = x.code || "";
+          e.hidden = false;
+          e.textContent = /invalid-credential|wrong-password|user-not-found|invalid-email/.test(c) ? "Wrong username or password." : c === "auth/too-many-requests" ? "Too many tries. Wait a few minutes and try again." : c === "auth/network-request-failed" ? "No internet connection." : c === "auth/operation-not-allowed" ? "Email/Password sign-in isn’t switched on in Firebase yet." : (x.message || "Sign-in failed.");
+          b.disabled = false; b.textContent = "Sign in";
+        }
+      };
+      b.onclick = go; P.onkeydown = U.onkeydown = ev => { if (ev.key === "Enter") go(); };
+      U.focus();
+    });
+  },
+  signOut() { firebase.auth().signOut().finally(() => location.reload()); }
+};
+
 const KEY = "cgl-plan:state", SNAPKEY = "cgl-plan:snapshots";
 const Store = { mode: "firebase", lastRemote: null };   // everything is saved in Firebase
-const FB_STATE = "cgl_user_data_v2", FB_SNAPS = "cgl_snapshots_v2";
+const uref = k => db.ref(`users/${Auth.user.uid}/${k}`);   // each login only ever touches its own folder
 
 // 2. Save changes to Firebase (stored as one JSON string so nothing gets dropped)
 function persist() {
@@ -1047,13 +1086,13 @@ function persist() {
     try {
       const str = JSON.stringify(state);
       Store.lastRemote = str;
-      await db.ref(FB_STATE).set(str);
+      await uref("state").set(str);
       save.status = "saved"; save.at = new Date(); save.err = null;
     } catch (e) { save.status = "err"; save.err = e.message || "Saving failed"; }
     paintSaved(); if (save.status === "err") render();
   }, 350);
 }
-async function persistSnaps() { try { await db.ref(FB_SNAPS).set(JSON.stringify(snapshots)); } catch (e) { /* main banner already covers failures */ } }
+async function persistSnaps() { try { await uref("snapshots").set(JSON.stringify(snapshots)); } catch (e) { /* main banner already covers failures */ } }
 function snapshot(reason) {
   snapshots.unshift({ id: uid(), at: new Date().toISOString(), reason, data: JSON.stringify(state) });
   snapshots = snapshots.slice(0, 10); persistSnaps();
@@ -1063,7 +1102,7 @@ function commit() { persist(); render(); }
 
 // 3. Live sync: when another device saves, this one updates too
 function startLiveSync() {
-  db.ref(FB_STATE).on("value", snap => {
+  uref("state").on("value", snap => {
     const v = snap.val();
     if (typeof v !== "string" || v === Store.lastRemote) return;   // our own save, or nothing new
     if (save.status === "saving") return;                            // don't overwrite unsaved local changes
@@ -1693,7 +1732,7 @@ function viewProgress() {
 /* ================= Settings ================= */
 function viewSettings() {
   const st = S(), last = state.backup.lastExport, ago = last ? diffDays(today(), last.slice(0, 10)) : null;
-  const sync = Store.mode === "firebase" ? "Saved to the cloud (Firebase). Open this page on your phone or laptop and you’ll see the same plan." : Store.mode === "browser" ? "Saved in this browser only. Export a backup each week, and import it on your other device." : "This browser isn’t keeping your data. Export a backup before you close the page.";
+  const sync = Store.mode === "firebase" ? `Signed in as ${esc(Auth.name())}. Saved to the cloud, so signing in on your phone or laptop shows the same plan.` : Store.mode === "browser" ? "Saved in this browser only. Export a backup each week, and import it on your other device." : "This browser isn’t keeping your data. Export a backup before you close the page.";
   return `<div class="page"><div class="page-h"><button class="ibtn" data-a="tab" data-k="today" aria-label="Back">${ic("back")}</button><h1>Settings</h1></div><div class="cols eq"><div class="main">
   <section class="sec"><div class="sec-h"><h2>Your plan</h2></div><div class="card">
     <button class="item" data-a="datesheet"><span class="mid"><b>Start date</b><span>${fmtDY(st.start)}${hasKickoff() ? `, then Week 1 on ${fmtD(anchorMonday())}` : ""}</span></span><span class="link">Change</span></button>
@@ -1704,7 +1743,7 @@ function viewSettings() {
   </div><div class="side"><section class="sec"><div class="sec-h"><h2>Backup</h2></div><div class="card pad"><p class="small">${sync}</p>
     <p class="small ${ago == null || ago > 7 ? "red" : "muted"}" style="margin:8px 0 14px">${last ? `Last backup ${ago === 0 ? "today" : plural(ago, "day") + " ago"}.` : "No backup yet."}</p>
     <div class="two"><button class="btn main" data-a="export">Export backup</button><button class="btn line" data-a="import">Import backup</button></div>
-    <input type="file" id="importfile" accept="application/json,.json" hidden></div>
+    <input type="file" id="importfile" accept="application/json,.json" hidden><button class="btn line wide" style="margin-top:10px" data-a="signout">Sign out</button></div>
     ${snapshots.length ? `<div class="card" style="margin-top:10px"><button class="item" data-a="undo"><span class="mid"><b>Undo the last plan change</b><span>${esc(snapshots[0].reason)}</span></span><span class="link">Undo</span></button></div>
       <details class="more"><summary>Older versions, ${snapshots.length}</summary><div class="card">${snapshots.map(s => `<div class="item"><span class="mid"><b>Before: ${esc(s.reason)}</b><span>${fmtD(s.at.slice(0, 10))}, ${s.at.slice(11, 16)}</span></span><button class="link" data-a="restoresnap" data-id="${s.id}">Restore</button></div>`).join("")}</div></details>` : ""}</section>
   <section class="sec"><div class="sec-h"><h2>Start over</h2></div><div class="card pad"><p class="small soft" style="margin-bottom:12px">Clear all your progress and scores but keep your question sets, so you can begin again with the same questions.</p><button class="btn dangerfill wide" data-a="resetsheet">Reset my progress</button></div></section>
@@ -2594,6 +2633,7 @@ const A = {
   undo: () => { const s = snapshots.shift(); if (!s) return; state = JSON.parse(s.data); clearCaches(); persistSnaps(); logChange("Undid a plan change", s.reason); toast("Plan change undone"); commit(); },
   restoresnap: el => { const s = snapshots.find(x => x.id === el.dataset.id); if (!s) return; snapshot("Restoring an older version"); state = JSON.parse(s.data); clearCaches(); ui.offerRestore = null; toast("Older version restored"); commit(); },
   retrysave: () => persist(),
+  signout: () => { if (confirm("Sign out on this device? Your plan stays saved in the cloud.")) Auth.signOut(); },
   toastundo: () => { if (lastUndo) { lastUndo(); lastUndo = null; ui.toast = null; commit(); } },
   close: () => closeSheet(),
   scrim: (el, e) => { if (e.target === el) closeSheet(); }
@@ -2629,10 +2669,11 @@ document.addEventListener("touchend", e => { if (tx == null) return; const dx = 
 (async function boot() {
   const app = document.getElementById("app");
   app.innerHTML = `<div style="padding:40px 16px;text-align:center;font-family:system-ui,sans-serif">Loading your plan…</div>`;
+  try { await Auth.require(); } catch (e) { app.innerHTML = `<div style="padding:40px 16px;font-family:system-ui,sans-serif">Couldn’t start sign-in: ${String(e.message || e).replace(/</g, "&lt;")}</div>`; return; }
   let raw = null, snapRaw = null;
   try {
     const t = new Promise((_, rej) => setTimeout(() => rej(new Error("Timed out talking to Firebase")), 12000));
-    const [r1, r2] = await Promise.race([Promise.all([db.ref(FB_STATE).once("value"), db.ref(FB_SNAPS).once("value")]), t]);
+    const [r1, r2] = await Promise.race([Promise.all([uref("state").once("value"), uref("snapshots").once("value")]), t]);
     raw = r1.val(); snapRaw = r2.val();
   } catch (e) {
     app.innerHTML = `<div style="max-width:520px;margin:0 auto;padding:40px 16px;font-family:system-ui,sans-serif"><h2>Couldn’t load your plan</h2><p style="margin:10px 0 16px">${String(e.message || e).replace(/</g, "&lt;")}</p><p style="margin-bottom:16px;opacity:.8">Check your internet and that your Firebase database rules allow reading and writing. Nothing was changed.</p><button onclick="location.reload()" style="padding:10px 16px;font:inherit">Try again</button></div>`;
