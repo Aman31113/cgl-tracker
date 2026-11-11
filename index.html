@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#EEF2F0" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#101614" media="(prefers-color-scheme: dark)">
@@ -1011,44 +1013,93 @@ function genDay(date) {
   return out;
 }
 
-/* ================= storage: account > browser > memory ================= */
-const KEY = "cgl-plan:state", SNAPKEY = "cgl-plan:snapshots";
-const Store = {
-  mode: "memory",
-  init() {
-    if (window.storage && typeof window.storage.get === "function") { this.mode = "account"; return; }
-    try { const k = "__cgl_t"; window.localStorage.setItem(k, "1"); window.localStorage.removeItem(k); this.mode = "browser"; } catch (e) { this.mode = "memory"; }
-  },
-  async get(key) {
-    if (this.mode === "account") { try { const r = await window.storage.get(key, false); return r ? r.value : null; } catch (e) { return null; } }
-    if (this.mode === "browser") return window.localStorage.getItem(key);
-    return null;
-  },
-  async set(key, val) {
-    if (this.mode === "account") { const r = await window.storage.set(key, val, false); if (!r) throw new Error("no result"); return; }
-    if (this.mode === "browser") { window.localStorage.setItem(key, val); return; }
-    throw new Error("This browser can’t keep data for this page");
-  }
+/* ================= storage: Firebase Cloud Database ================= */
+
+// 1. Initialize Firebase with your project keys from the Firebase Console
+const firebaseConfig = {
+  apiKey: "AIzaSyB5fmk5LkK9Triqrna8GyEToAcj-lovvjU",
+  authDomain: "cgl-tracker-53400.firebaseapp.com",
+  databaseURL: "https://cgl-tracker-53400-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "cgl-tracker-53400",
+  storageBucket: "cgl-tracker-53400.firebasestorage.app",
+  messagingSenderId: "130801643794",
+  appId: "1:130801643794:web:104850614a8f6c6d06c3cb",
+  measurementId: "G-DDBFE80J3X"
 };
+
+ // Initialize Firebase using compat syntax
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
 let snapshots = [];
+let isRemoteUpdate = false; // Flag to prevent infinite sync loops
 const save = { status: "saved", at: null, err: null, timer: null };
+
+// 2. Save changes directly to the Firebase Cloud Database in real-time
 function persist() {
-  save.status = "saving"; paintSaved();
+  if (isRemoteUpdate) return; // Skip saving if this change came from the cloud listener
+  
+  save.status = "saving"; 
+  paintSaved();
   clearTimeout(save.timer);
   save.timer = setTimeout(async () => {
-    try { await Store.set(KEY, JSON.stringify(state)); save.status = "saved"; save.at = new Date(); save.err = null; }
-    catch (e) { save.status = "err"; save.err = e.message || "Saving failed"; }
-    paintSaved(); if (save.status === "err") render();
+    try {
+      await db.ref("cgl_user_data").set(state);
+      save.status = "saved"; 
+      save.at = new Date(); 
+      save.err = null;
+    } catch (e) {
+      save.status = "err"; 
+      save.err = e.message || "Saving failed";
+    }
+    paintSaved(); 
+    if (save.status === "err") render();
   }, 350);
 }
-async function persistSnaps() { try { await Store.set(SNAPKEY, JSON.stringify(snapshots)); } catch (e) { /* main banner already covers failures */ } }
+
+async function persistSnaps() { 
+  try { 
+    await db.ref("cgl_snapshots").set(snapshots); 
+  } catch (e) { /* main banner already covers failures */ } 
+}
+
 function snapshot(reason) {
   snapshots.unshift({ id: uid(), at: new Date().toISOString(), reason, data: JSON.stringify(state) });
-  snapshots = snapshots.slice(0, 10); persistSnaps();
+  snapshots = snapshots.slice(0, 10); 
+  persistSnaps();
 }
-function logChange(what, why) { state.log.unshift({ at: new Date().toISOString(), what, why: why || "" }); state.log = state.log.slice(0, 300); }
-function commit() { persist(); render(); }
 
+function logChange(what, why) { 
+  state.log.unshift({ at: new Date().toISOString(), what, why: why || "" }); 
+  state.log = state.log.slice(0, 300); 
+}
+
+function commit() { 
+  persist(); 
+  render(); 
+}
+
+// 3. Automatically listen for data changes from any device and sync the UI instantly
+db.ref("cgl_user_data").on("value", (snapshot) => {
+  const data = snapshot.val();
+  if (data) {
+    // Check if the incoming cloud data is different from current state to prevent loops
+    if (JSON.stringify(data) !== JSON.stringify(state)) {
+      isRemoteUpdate = true;
+      state = data;
+      render();
+      isRemoteUpdate = false;
+    }
+  }
+});
+
+// Load initial snapshots from Firebase on startup
+db.ref("cgl_snapshots").once("value", (snapshot) => {
+  const data = snapshot.val();
+  if (data && Array.isArray(data)) {
+    snapshots = data;
+  }
+});
 /* ================= assembling a day ================= */
 const ui = { quiz: null, tab: "today", sel: null, weekView: null, monthView: null, mF: "open", mSec: "all", topicSec: "all", omrSel: null, sheet: null, toast: null };
 let movedIdx = null;
