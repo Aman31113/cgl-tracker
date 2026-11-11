@@ -1035,71 +1035,41 @@ let snapshots = [];
 let isRemoteUpdate = false; // Flag to prevent infinite sync loops
 const save = { status: "saved", at: null, err: null, timer: null };
 
-// 2. Save changes directly to the Firebase Cloud Database in real-time
+const KEY = "cgl-plan:state", SNAPKEY = "cgl-plan:snapshots";
+const Store = { mode: "firebase", lastRemote: null };   // everything is saved in Firebase
+const FB_STATE = "cgl_user_data_v2", FB_SNAPS = "cgl_snapshots_v2";
+
+// 2. Save changes to Firebase (stored as one JSON string so nothing gets dropped)
 function persist() {
-  if (isRemoteUpdate) return; // Skip saving if this change came from the cloud listener
-  
-  save.status = "saving"; 
-  paintSaved();
+  save.status = "saving"; paintSaved();
   clearTimeout(save.timer);
   save.timer = setTimeout(async () => {
     try {
-      await db.ref("cgl_user_data").set(state);
-      save.status = "saved"; 
-      save.at = new Date(); 
-      save.err = null;
-    } catch (e) {
-      save.status = "err"; 
-      save.err = e.message || "Saving failed";
-    }
-    paintSaved(); 
-    if (save.status === "err") render();
+      const str = JSON.stringify(state);
+      Store.lastRemote = str;
+      await db.ref(FB_STATE).set(str);
+      save.status = "saved"; save.at = new Date(); save.err = null;
+    } catch (e) { save.status = "err"; save.err = e.message || "Saving failed"; }
+    paintSaved(); if (save.status === "err") render();
   }, 350);
 }
-
-async function persistSnaps() { 
-  try { 
-    await db.ref("cgl_snapshots").set(snapshots); 
-  } catch (e) { /* main banner already covers failures */ } 
-}
-
+async function persistSnaps() { try { await db.ref(FB_SNAPS).set(JSON.stringify(snapshots)); } catch (e) { /* main banner already covers failures */ } }
 function snapshot(reason) {
   snapshots.unshift({ id: uid(), at: new Date().toISOString(), reason, data: JSON.stringify(state) });
-  snapshots = snapshots.slice(0, 10); 
-  persistSnaps();
+  snapshots = snapshots.slice(0, 10); persistSnaps();
 }
+function logChange(what, why) { state.log.unshift({ at: new Date().toISOString(), what, why: why || "" }); state.log = state.log.slice(0, 300); }
+function commit() { persist(); render(); }
 
-function logChange(what, why) { 
-  state.log.unshift({ at: new Date().toISOString(), what, why: why || "" }); 
-  state.log = state.log.slice(0, 300); 
+// 3. Live sync: when another device saves, this one updates too
+function startLiveSync() {
+  db.ref(FB_STATE).on("value", snap => {
+    const v = snap.val();
+    if (typeof v !== "string" || v === Store.lastRemote) return;   // our own save, or nothing new
+    if (save.status === "saving") return;                            // don't overwrite unsaved local changes
+    try { state = { ...defaultState(), ...JSON.parse(v) }; Store.lastRemote = v; clearCaches(); render(); } catch (e) { /* ignore bad data */ }
+  });
 }
-
-function commit() { 
-  persist(); 
-  render(); 
-}
-
-// 3. Automatically listen for data changes from any device and sync the UI instantly
-db.ref("cgl_user_data").on("value", (snapshot) => {
-  const data = snapshot.val();
-  if (data) {
-    // Check if the incoming cloud data is different from current state to prevent loops
-    if (JSON.stringify(data) !== JSON.stringify(state)) {
-      isRemoteUpdate = true;
-      state = data;
-      render();
-      isRemoteUpdate = false;
-    }
-  }
-});
-
-// Load initial snapshots from Firebase on startup
-db.ref("cgl_snapshots").once("value", (snapshot) => {
-  const data = snapshot.val();
-  if (data && Array.isArray(data)) {
-    snapshots = data;
-  }
-});
 /* ================= assembling a day ================= */
 const ui = { quiz: null, tab: "today", sel: null, weekView: null, monthView: null, mF: "open", mSec: "all", topicSec: "all", omrSel: null, sheet: null, toast: null };
 let movedIdx = null;
@@ -1439,9 +1409,9 @@ const TABS = [["today", "Today"], ["week", "Week"], ["tests", "Tests"], ["review
 function savedText() {
   if (save.status === "saving") return "Saving";
   if (save.status === "err" || Store.mode === "memory") return "Not saved";
-  return Store.mode === "account" ? "Saved" : "Saved on this device";
+  return "Saved to cloud";
 }
-function paintSaved() { document.querySelectorAll(".saved").forEach(el => { el.className = "saved " + (save.status === "saving" ? "saving" : (save.status === "err" || Store.mode === "memory") ? "err" : ""); el.textContent = savedText(); el.title = Store.mode === "account" ? "Saved to your Claude account" : Store.mode === "browser" ? "Saved in this browser" : "This browser isn’t keeping your data"; }); }
+function paintSaved() { document.querySelectorAll(".saved").forEach(el => { el.className = "saved " + (save.status === "saving" ? "saving" : (save.status === "err" || Store.mode === "memory") ? "err" : ""); el.textContent = savedText(); el.title = Store.mode === "firebase" ? "Saved to Firebase" : Store.mode === "browser" ? "Saved in this browser" : "This browser isn’t keeping your data"; }); }
 function shell(body) {
   const nav = (cls) => TABS.map(([k, n]) => `<button data-a="tab" data-k="${k}" ${ui.tab === k ? 'aria-current="page"' : ""}>${cls === "tabs" ? ic(k) : ""}<span>${n}</span></button>`).join("");
   const err = (save.status === "err" || Store.mode === "memory")
@@ -1723,7 +1693,7 @@ function viewProgress() {
 /* ================= Settings ================= */
 function viewSettings() {
   const st = S(), last = state.backup.lastExport, ago = last ? diffDays(today(), last.slice(0, 10)) : null;
-  const sync = Store.mode === "account" ? "Saved to your Claude account. Open this page on your phone or laptop and you’ll see the same plan. Only you can see it." : Store.mode === "browser" ? "Saved in this browser only. Export a backup each week, and import it on your other device." : "This browser isn’t keeping your data. Export a backup before you close the page.";
+  const sync = Store.mode === "firebase" ? "Saved to the cloud (Firebase). Open this page on your phone or laptop and you’ll see the same plan." : Store.mode === "browser" ? "Saved in this browser only. Export a backup each week, and import it on your other device." : "This browser isn’t keeping your data. Export a backup before you close the page.";
   return `<div class="page"><div class="page-h"><button class="ibtn" data-a="tab" data-k="today" aria-label="Back">${ic("back")}</button><h1>Settings</h1></div><div class="cols eq"><div class="main">
   <section class="sec"><div class="sec-h"><h2>Your plan</h2></div><div class="card">
     <button class="item" data-a="datesheet"><span class="mid"><b>Start date</b><span>${fmtDY(st.start)}${hasKickoff() ? `, then Week 1 on ${fmtD(anchorMonday())}` : ""}</span></span><span class="link">Change</span></button>
@@ -2657,13 +2627,28 @@ document.addEventListener("touchend", e => { if (tx == null) return; const dx = 
 
 /* ================= start ================= */
 (async function boot() {
-  Store.init();
-  let raw = null; try { raw = await Store.get(KEY); } catch (e) { raw = null; }
-  try { const s = await Store.get(SNAPKEY); snapshots = s ? JSON.parse(s) : []; } catch (e) { snapshots = []; }
+  const app = document.getElementById("app");
+  app.innerHTML = `<div style="padding:40px 16px;text-align:center;font-family:system-ui,sans-serif">Loading your plan…</div>`;
+  let raw = null, snapRaw = null;
+  try {
+    const t = new Promise((_, rej) => setTimeout(() => rej(new Error("Timed out talking to Firebase")), 12000));
+    const [r1, r2] = await Promise.race([Promise.all([db.ref(FB_STATE).once("value"), db.ref(FB_SNAPS).once("value")]), t]);
+    raw = r1.val(); snapRaw = r2.val();
+  } catch (e) {
+    app.innerHTML = `<div style="max-width:520px;margin:0 auto;padding:40px 16px;font-family:system-ui,sans-serif"><h2>Couldn’t load your plan</h2><p style="margin:10px 0 16px">${String(e.message || e).replace(/</g, "&lt;")}</p><p style="margin-bottom:16px;opacity:.8">Check your internet and that your Firebase database rules allow reading and writing. Nothing was changed.</p><button onclick="location.reload()" style="padding:10px 16px;font:inherit">Try again</button></div>`;
+    return;
+  }
+  try { snapshots = snapRaw ? JSON.parse(snapRaw) : []; } catch (e) { snapshots = []; }
+  if (typeof raw !== "string") {   // first time on Firebase: bring over anything this browser saved earlier
+    raw = null;
+    try { const old = window.localStorage.getItem(KEY); if (old) raw = old; } catch (e) {}
+  }
+  Store.lastRemote = typeof raw === "string" ? raw : null;
   if (raw) { try { state = { ...defaultState(), ...JSON.parse(raw) }; } catch (e) { state = defaultState(); } }
   else { state = defaultState(); if (snapshots.length) ui.offerRestore = snapshots[0]; }
   ui.sel = defaultSel(); render();
-  if (!raw) persist(); else { save.status = "saved"; paintSaved(); }
+  if (!raw || Store.lastRemote == null) persist(); else { save.status = "saved"; paintSaved(); }
+  startLiveSync();
 })();
 
 /* ================= Tests tab: actions ================= */
