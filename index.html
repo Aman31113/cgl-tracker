@@ -6,12 +6,15 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#EEF2F0" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#101614" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" id="tc" content="#F1F5F9">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="CGL plan">
+<script>try{var u=JSON.parse(localStorage.getItem("cgl-ui")||"{}"),t=u.theme||"auto";if(t==="auto")t=matchMedia("(prefers-color-scheme: dark)").matches?"night":"light";var h=document.documentElement;h.dataset.theme=t;h.dataset.motion=u.motion==="off"?"off":"full"}catch(e){}</script>
 <title>CGL plan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Atkinson+Hyperlegible+Next:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* Tailwind palette (slate, teal, sky, indigo, violet, amber, orange, rose, emerald, fuchsia) written as plain CSS */
 :root{
@@ -28,16 +31,6 @@
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   --r:20px; --r-s:14px; --tab:66px;
 }
-@media (prefers-color-scheme: dark){:root{
-  color-scheme:dark;
-  --bg:#020617; --surface:#0F172A; --surface-2:#1E293B; --line:#1E293B;
-  --text:#F1F5F9; --text-2:#CBD5E1; --text-3:#64748B;
-  --accent:#2DD4BF; --accent-2:#5EEAD4; --accent-weak:#134E4A; --on-accent:#042F2E;
-  --red:#FB7185; --red-weak:#4C0519; --sun:#FCD34D;
-  --c-quant:#34D399; --c-eng:#818CF8; --c-ga:#FBBF24; --c-rsn:#E879F9; --c-mixed:#64748B;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px -16px rgba(0,0,0,.7);
-  --shadow-lg:0 24px 48px -20px rgba(0,0,0,.8);
-}}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-padding-bottom:calc(var(--tab) + env(safe-area-inset-bottom) + 16px);scroll-padding-top:70px}
 body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.5 var(--font);-webkit-font-smoothing:antialiased;
@@ -97,7 +90,6 @@ svg.i{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .hero.d-mock{--h1:#F59E0B;--h2:#EA580C}
 .hero.d-repair{--h1:#F43F5E;--h2:#C026D3}
 .hero.d-none{--h1:#64748B;--h2:#334155}
-@media (prefers-color-scheme: dark){.hero{filter:saturate(.9) brightness(.86)}}
 .btn.white{background:#fff;color:#0F172A} .btn.white:hover{background:#F1F5F9}
 .btn.ghostw{background:rgba(255,255,255,.16);color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.35)} .btn.ghostw:hover{background:rgba(255,255,255,.26)}
 
@@ -534,9 +526,133 @@ body.sheet-open{overflow:hidden}
 .sheet .acts{flex-wrap:wrap;position:sticky;bottom:calc(-1 * var(--pb));z-index:2;margin:18px calc(-1 * var(--px)) calc(-1 * var(--pb));padding:14px var(--px) var(--pb);background:linear-gradient(to bottom,color-mix(in srgb,var(--bg) 0%,transparent),var(--bg) 14px)}
 @media (min-width:900px){ .sheet{--px:24px;--pb:24px;padding-top:22px} }
 .sheet .acts .btn{flex:1 1 150px}
+
+/* ===== themes: Light, Night, Black, Midnight, Paper, Lavender (Auto follows the phone) ===== */
+html[data-theme="night"]{color-scheme:dark;--bg:#020617;--surface:#0F172A;--surface-2:#1E293B;--line:#1E293B;--text:#F1F5F9;--text-2:#CBD5E1;--text-3:#7C8AA3;--accent:#2DD4BF;--accent-2:#5EEAD4;--accent-weak:#134E4A;--on-accent:#042F2E;--red:#FB7185;--red-weak:#4C0519;--sun:#FCD34D;--c-quant:#34D399;--c-eng:#818CF8;--c-ga:#FBBF24;--c-rsn:#E879F9;--c-mixed:#64748B;--shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px -16px rgba(0,0,0,.7);--shadow-lg:0 24px 48px -20px rgba(0,0,0,.8)}
+html[data-theme="black"]{color-scheme:dark;--bg:#000;--surface:#0B0B0C;--surface-2:#161618;--line:#232327;--text:#F4F4F5;--text-2:#C9C9CF;--text-3:#8A8A93;--accent:#34D399;--accent-2:#6EE7B7;--accent-weak:#0B3B2E;--on-accent:#04120D;--red:#FB7185;--red-weak:#3A0A14;--sun:#FCD34D;--c-quant:#34D399;--c-eng:#818CF8;--c-ga:#FBBF24;--c-rsn:#E879F9;--c-mixed:#71717A;--shadow:0 1px 2px rgba(0,0,0,.6),0 12px 30px -16px rgba(0,0,0,.9);--shadow-lg:0 24px 48px -20px rgba(0,0,0,.95)}
+html[data-theme="midnight"]{color-scheme:dark;--bg:#0A0F1F;--surface:#111A33;--surface-2:#1A2547;--line:#22305A;--text:#EAF0FF;--text-2:#B8C6EC;--text-3:#7F90C0;--accent:#7DD3FC;--accent-2:#BAE6FD;--accent-weak:#0C3B5C;--on-accent:#04202F;--red:#FB7185;--red-weak:#4C0519;--sun:#FCD34D;--c-quant:#5EEAD4;--c-eng:#A5B4FC;--c-ga:#FCD34D;--c-rsn:#F0ABFC;--c-mixed:#7F90C0;--shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px -16px rgba(2,6,23,.8);--shadow-lg:0 24px 48px -20px rgba(2,6,23,.9)}
+html[data-theme="paper"]{color-scheme:light;--bg:#F4ECD8;--surface:#FBF6E9;--surface-2:#EFE5CB;--line:#E0D3B0;--text:#3A2E1C;--text-2:#66563A;--text-3:#86764F;--accent:#B4532A;--accent-2:#8F3F1D;--accent-weak:#F5DCC9;--on-accent:#FFFFFF;--red:#B91C1C;--red-weak:#FBE0DC;--sun:#D97706;--shadow:0 1px 2px rgba(58,46,28,.08),0 10px 30px -14px rgba(58,46,28,.28);--shadow-lg:0 2px 4px rgba(58,46,28,.08),0 24px 48px -20px rgba(58,46,28,.4)}
+html[data-theme="lavender"]{color-scheme:light;--bg:#F5EFFF;--surface:#FFFFFF;--surface-2:#FAF6FF;--line:#E6DBF8;--text:#1E1433;--text-2:#55467A;--text-3:#7F71A0;--accent:#7C3AED;--accent-2:#6D28D9;--accent-weak:#EDE4FF;--on-accent:#FFFFFF;--shadow:0 1px 2px rgba(60,20,120,.06),0 10px 30px -14px rgba(60,20,120,.25);--shadow-lg:0 2px 4px rgba(60,20,120,.08),0 24px 48px -20px rgba(60,20,120,.4)}
+html[data-theme="paper"] .hero.d-moderate{--h1:#C2693A;--h2:#8F3F1D}
+html[data-theme="paper"] .hero.p-week{--h1:#7C8F3A;--h2:#4D6B2A}
+html[data-theme="paper"] .hero.p-tests{--h1:#B4532A;--h2:#7A2E1A}
+html[data-theme="paper"] .hero.p-review{--h1:#C2410C;--h2:#9A3412}
+html[data-theme="paper"] .hero.p-progress{--h1:#4D7C0F;--h2:#3F6212}
+html[data-theme="lavender"] .hero.d-moderate{--h1:#8B5CF6;--h2:#6D28D9}
+html[data-theme="lavender"] .hero.p-week{--h1:#7C3AED;--h2:#4F46E5}
+html[data-theme="lavender"] .hero.p-tests{--h1:#A855F7;--h2:#DB2777}
+html[data-theme="lavender"] .hero.p-review{--h1:#EC4899;--h2:#F97316}
+html[data-theme="lavender"] .hero.p-progress{--h1:#6366F1;--h2:#0EA5E9}
+html[data-theme="black"] .hero.d-moderate{--h1:#10B981;--h2:#0E7490}
+html[data-theme="night"] .hero,html[data-theme="black"] .hero,html[data-theme="midnight"] .hero{filter:saturate(.92) brightness(.88)}
+
+/* ===== phone feel ===== */
+html{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+button,summary,.item,.chk,.tabs button,.task .body,select,label.field{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.btn,.ibtn,.tabs button,.seg button,.chk,.thm{user-select:none;-webkit-user-select:none}
+.saved .stt{display:inline}
+@media (max-width:420px){.saved .stt{display:none}.saved.err .stt,.saved.saving .stt{display:inline}}
+@media (max-width:360px){.top{padding-left:14px;padding-right:6px}.top .brand{font-size:17px}.ibtn{width:42px}}
+
+/* ===== look: display type, numbered sections, motion ===== */
+:root{--display:"Space Grotesk","Atkinson Hyperlegible Next",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.hero h1,.page-h h1,.top .brand,.sec-h h2,.nums b,.size .l b{font-family:var(--display);letter-spacing:-.035em}
+.hero h1{font-weight:700;font-size:clamp(32px,9.2vw,42px);line-height:1.02}
+.hero .eyebrow{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;opacity:.9}
+.hero .eyebrow::before{content:"\21AA\00a0"}
+.sec-h h2{font-weight:700;letter-spacing:-.03em}
+#app{counter-reset:sec}
+.sec-h h2::before{counter-increment:sec;content:"(" counter(sec,decimal-leading-zero) ")";font:600 12px var(--mono);letter-spacing:.04em;color:var(--text-3);margin-right:9px;vertical-align:.18em}
+.sec-h .ibtn,.sec-h button{font-family:inherit}
+body::before{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none;background:radial-gradient(40% 35% at 18% 12%,color-mix(in srgb,var(--c-eng) 20%,transparent),transparent 70%),radial-gradient(34% 30% at 88% 22%,color-mix(in srgb,var(--accent) 18%,transparent),transparent 70%),radial-gradient(46% 40% at 62% 92%,color-mix(in srgb,var(--c-rsn) 15%,transparent),transparent 70%);animation:aurora 40s ease-in-out infinite alternate;will-change:transform}
+@keyframes aurora{to{transform:translate3d(4%,3%,0) scale(1.1) rotate(3deg)}}
+.top .brand::before{animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hart,.cubes{animation:floaty 7s ease-in-out infinite}
+@keyframes floaty{50%{transform:translateY(-7px) rotate(1.6deg)}}
+.btn,.ibtn,.item,.tabs button,.task .body,.seg button,.thm,.chk{transition:transform .16s cubic-bezier(.3,1.4,.5,1),background-color .2s,color .2s,box-shadow .2s}
+.btn:active,.ibtn:active,.item:active,.tabs button:active,.seg button:active,.thm:active{transform:scale(.96)}
+.task .body:active{transform:scale(.985)}
+@media (hover:hover){.btn:hover{transform:translateY(-2px)}.item:hover{background:color-mix(in srgb,var(--accent) 6%,transparent)}}
+.tabs button svg{transition:background-color .25s,transform .35s cubic-bezier(.3,1.6,.5,1)}
+.tabs button[aria-current="page"] svg{transform:translateY(-1px)}
+body.enter .tabs button[aria-current="page"] svg{animation:tabpop .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes tabpop{0%{transform:scale(.6) translateY(4px)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+.fx-in{animation:rise .7s cubic-bezier(.2,.75,.2,1) both;animation-delay:calc(var(--i,0)*60ms)}
+@keyframes rise{from{opacity:0;transform:translateY(24px) scale(.985)}to{opacity:1;transform:none}}
+.chk{position:relative}
+.task.pop .chk span{animation:pop .55s cubic-bezier(.3,1.7,.5,1)}
+.task.pop .chk::after{content:"";position:absolute;width:34px;height:34px;border-radius:50%;border:2px solid var(--accent);animation:ringburst .7s ease-out forwards;pointer-events:none}
+@keyframes pop{0%{transform:scale(.55)}55%{transform:scale(1.3)}100%{transform:scale(1)}}
+@keyframes ringburst{from{opacity:.9;transform:scale(.6)}to{opacity:0;transform:scale(2.4)}}
+.ring .fg{transition:stroke-dashoffset .9s cubic-bezier(.2,.8,.2,1)}
+.sheet{animation:sheetup .42s cubic-bezier(.2,.9,.2,1)}
+@keyframes sheetup{from{transform:translateY(60px);opacity:.4}to{transform:none;opacity:1}}
+.toast{animation:toastin .4s cubic-bezier(.3,1.5,.5,1)}
+@keyframes toastin{from{opacity:0;transform:translate(-50%,16px) scale(.95)}to{opacity:1;transform:translate(-50%,0)}}
+.fx-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:90}
+#fx-glow{position:fixed;left:0;top:0;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;pointer-events:none;z-index:1;opacity:0;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 16%,transparent),transparent 65%);transition:opacity .5s;will-change:transform}
+html[data-motion="off"] *,html[data-motion="off"] *::before,html[data-motion="off"] *::after{animation:none!important;transition:none!important}
+html[data-motion="off"] #fx-glow{display:none}
+
+@media (orientation:landscape) and (max-height:520px){.hero{padding:14px 16px;margin-bottom:12px}.hero h1{font-size:28px}.hero .eyebrow{font-size:11px}.cubes,.hart{display:none}.tabs button span{font-size:11px}}
+@media (max-width:340px){.hero .eyebrow{letter-spacing:.04em;font-size:11px}}
+
+.sheet{position:relative}
+.sh-x{position:absolute;top:10px;right:12px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:24px;line-height:1;color:var(--text-2);background:var(--surface-2);z-index:2}
+.sheet>h2#sh{padding-right:44px}
+
+/* ===== theme picker ===== */
+.thm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 18px}
+.thm{display:flex;flex-direction:column;gap:7px;align-items:stretch;padding:8px;border:2px solid var(--line);border-radius:16px;background:var(--surface);font-weight:700;font-size:13.5px;text-align:center;color:var(--text)}
+.thm[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+.pv{display:block;height:52px;border-radius:10px;border:1px solid color-mix(in srgb,var(--text) 14%,transparent);position:relative;overflow:hidden}
+.pv i{position:absolute;left:7px;right:7px;bottom:7px;height:17px;border-radius:6px}
+.pv b{position:absolute;right:10px;top:8px;width:13px;height:13px;border-radius:50%}
+.pv.half{display:flex}.pv.half i{position:static;flex:1;height:100%;border-radius:0}
+.lk-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px}
+.lk-row>span{font-weight:700}.lk-row .seg{width:190px}
+.lk-row small{display:block;font-weight:400;color:var(--text-3);font-size:13px}
+
+/* ===== loading curtain ===== */
+#boot{position:fixed;inset:0;z-index:200;background:var(--bg);color:var(--text);display:flex;flex-direction:column;justify-content:space-between;padding:calc(env(safe-area-inset-top) + 22px) 22px calc(env(safe-area-inset-bottom) + 18px);transition:transform .95s cubic-bezier(.77,0,.18,1)}
+#boot.out{transform:translateY(-101%)}
+#boot .b-top{display:flex;justify-content:space-between;font:600 12px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--text-2)}
+#boot .b-txt{font:500 clamp(18px,5vw,26px)/1.2 var(--display);max-width:16em;letter-spacing:-.02em}
+#boot .b-txt em{font-style:normal;color:var(--accent)}
+#boot .b-count{font:700 clamp(96px,34vw,260px)/.82 var(--display);letter-spacing:-.06em;display:flex;align-items:flex-start;font-variant-numeric:tabular-nums}
+#boot .b-count i{font-style:normal;font-size:.28em;margin:.14em 0 0 .06em;color:var(--accent)}
+#boot .b-bar{position:absolute;left:0;right:0;top:0;height:4px;background:transparent}
+#boot .b-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--c-quant),var(--c-eng),var(--c-rsn),var(--c-ga));transform-origin:left;transform:scaleX(0)}
+html[data-motion="off"] #boot{display:none}
+
 </style>
 </head>
 <body>
+<div id="boot" aria-hidden="true"><div class="b-bar"><i id="b-bar"></i></div><div class="b-top"><span>CGL plan</span><span>Study planner</span></div><div class="b-txt">Your plan is <em>loading</em>.<br>One moment, please.</div><div class="b-count"><span id="b-n">000</span><i>%</i></div></div>
+<script>
+(function () {
+  var b = document.getElementById("boot"); if (!b) return;
+  function drop() { if (b.parentNode) b.parentNode.removeChild(b); }
+  var skip = false;
+  try { var u = JSON.parse(localStorage.getItem("cgl-ui") || "{}"); skip = !!sessionStorage.getItem("cgl-boot") || u.motion === "off" || (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches); sessionStorage.setItem("cgl-boot", "1"); } catch (e) {}
+  if (skip) { drop(); return; }
+  var n = document.getElementById("b-n"), bar = document.getElementById("b-bar"), p = 0, t0 = Date.now(), gone = false, ready = false;
+  function leave() { if (gone) return; gone = true; b.className = "out"; setTimeout(drop, 1000); }
+  setTimeout(leave, 4500);
+  window.addEventListener("error", function () { setTimeout(leave, 300); });
+  window.addEventListener("unhandledrejection", function () { setTimeout(leave, 300); });
+  (function f() {
+    if (gone) return;
+    var app = document.getElementById("app"); if (app && app.querySelector("header.top,#lg-b,h2,.page")) ready = true;
+    var target = ready && Date.now() - t0 > 1000 ? 100 : 88;
+    p += (target - p) * 0.07 + 0.12; if (p > target) p = target;
+    n.textContent = ("00" + Math.round(p)).slice(-3); bar.style.transform = "scaleX(" + p / 100 + ")";
+    if (p >= 99.4 && target === 100) { n.textContent = "100"; leave(); return; }
+    setTimeout(f, 16);
+  })();
+})();
+</script>
 <div id="app"></div>
 <div id="layer"></div>
 <script>
@@ -668,6 +784,157 @@ for (const t of Object.values(TOPICS)) {
 const GROUP = { repair: "Repair", speed: "Speed", maintain: "Maintain", new: "New to you", skip: "Skip" };
 const tn = id => (TOPICS[id] ? TOPICS[id].name : id);
 
+/* ================= sub-topics and day-wise lessons (from your Master Plan PDF) ================= */
+const SUBS = {
+  "q-number": ["Divisibility rules (2–13)", "Remainder theorem and cyclicity", "Unit digit and last two digits", "Factors, number of factors, primes and co-primes", "Squares, cubes and roots", "Recurring decimals and fractions", "Digit, base and place-value problems"],
+  "q-hcf": ["HCF and LCM by factorisation and division", "HCF and LCM of fractions", "Product of two numbers = HCF × LCM", "Word problems: bells, tiles, circular track", "Greatest number leaving given remainders"],
+  "q-simp": ["BODMAS and simplification", "Approximation and fast calculation", "Surds: rationalisation", "Surds: comparison and nested roots", "Indices: laws and equations", "Square-root and cube-root methods"],
+  "q-pct": ["Percentage basics and fraction equivalents", "Successive percentage change", "Population and depreciation", "Expenditure, income and price–consumption", "Election and pass-mark questions", "Percentage in ratio form"],
+  "q-ratio": ["Basic ratio: comparing and dividing", "Proportion and mean proportion", "Direct, inverse and compound variation", "Ratio of ages", "Ratio after addition or removal", "Ratio with money and coins"],
+  "q-avg": ["Simple average", "Weighted average", "Average after adding, removing or replacing a member", "Average speed, age and runs", "Consecutive numbers"],
+  "q-pl": ["CP, SP, profit and loss percentage", "Successive profit and loss", "Mixed-article and lot problems", "Dishonest shopkeeper (false weights)", "Profit with marked price"],
+  "q-disc": ["Marked price and discount", "Successive discounts", "Discount and profit together", "Buy-get-free offers"],
+  "q-si": ["Simple interest basics", "Compound interest: yearly, half-yearly, quarterly", "Difference between CI and SI", "Instalments", "Doubling and tripling time"],
+  "q-part": ["Investment × time partnership", "Withdrawals and entry of a new partner", "Working and sleeping partners"],
+  "q-mix": ["Alligation rule and mean price", "Repeated replacement of a liquid", "Mixing different strengths", "Milk-and-water type"],
+  "q-alg": ["Basic identities: (a±b)², a³±b³", "x + 1/x and x − 1/x chains", "a + b + c = 0 and cube-sum identities", "Linear equations, one and two variables", "Quadratic equations and roots", "Maximum and minimum values", "Inequalities and modulus"],
+  "q-tw": ["Work with efficiency and the LCM method", "Alternate days, leaving and joining", "Work and wages", "Pipes and cisterns", "Man–day–hour (chain rule)"],
+  "q-tsd": ["Speed, time and distance basics", "Average speed and unit conversion", "Relative speed: meeting and catch-up", "Late, early and usual-speed problems", "Circular track and clock problems"],
+  "q-train": ["Train crossing a pole, platform or person", "Two trains, same and opposite direction"],
+  "q-boat": ["Upstream and downstream speed", "Round trips and average speed", "Still-water and stream speed from times"],
+  "q-geo": ["Lines, angles and parallel lines", "Triangle properties and angle sums", "Centres: centroid, incentre, circumcentre, orthocentre", "Congruence and similarity", "Pythagoras and special triangles", "Midpoint and basic proportionality theorem"],
+  "q-stat": ["Mean, median and mode", "Basic probability: coins, dice, cards", "Standard deviation basics"],
+  "q-circ": ["Chords, arcs and tangents", "Angles in a circle and cyclic quadrilaterals", "Two circles and common tangents", "Polygons: interior and exterior angles", "Quadrilaterals: parallelogram, rhombus, trapezium"],
+  "q-mens": ["2D: triangle, rectangle, circle and sector", "2D: trapezium, rhombus, regular polygons", "Cube and cuboid", "Cylinder, cone, sphere, hemisphere", "Melting and recasting solids"],
+  "q-trig": ["Trig ratios and standard values", "Identities", "Complementary angles and simplification", "Maximum and minimum trig values", "a·sinθ + b·cosθ forms"],
+  "q-hd": ["Elevation and depression", "Two-observer problems", "Tower, shadow and ladder"],
+  "q-di": ["Table DI", "Bar graph", "Line graph", "Pie chart", "Histogram and frequency polygon", "Missing-data and mixed DI"],
+  "q-series": ["Number series", "Missing and wrong number", "Linear graphs and coordinates"],
+  "e-pos": ["Nouns: types, number, gender", "Pronouns: types and agreement", "Adjectives and degrees of comparison", "Adverbs and placement", "Verbs: types, modals, auxiliaries"],
+  "e-tense": ["Present tenses", "Past tenses", "Future tenses", "Conditionals (if clauses)", "Tense sequence in clauses"],
+  "e-sva": ["Basic subject–verb rules", "Either/neither, each/every, collective nouns", "‘As well as’, ‘along with’ and ‘a number of’", "Inversion and special cases"],
+  "e-art": ["Use of a and an", "Use of the", "Omission of articles"],
+  "e-prep": ["Prepositions of time and place", "Fixed prepositions (verb and adjective + preposition)", "Conjunctions", "Correlative pairs (not only … but also)"],
+  "e-err": ["Errors in tense and verb form", "Errors in preposition and article", "Errors in pronoun and adjective", "Errors in structure and parallelism", "Comparatives and superlatives"],
+  "e-simp": ["Improvement: grammar", "Improvement: vocabulary and idiom", "Improvement: sentence structure"],
+  "e-voice": ["Active to passive: simple tenses", "Passive of modals, continuous and perfect", "Imperative and interrogative passive"],
+  "e-narr": ["Direct to indirect: statements", "Questions (wh- and yes/no)", "Commands, requests, exclamations", "Tense and pronoun changes"],
+  "e-spell": ["Commonly misspelt words", "Silent and double letters", "-ible/-able and ie/ei patterns", "Correct-word choice"],
+  "e-syn": ["Synonyms: high-frequency list", "Antonyms: high-frequency list", "Prefix, suffix and word roots", "Words in context"],
+  "e-idiom": ["Idioms: body parts", "Idioms: animals and colours", "Idioms: action and situation", "Phrases", "Phrasal verbs"],
+  "e-ows": ["One-word: people and professions", "One-word: actions and states", "One-word: groups and collections", "One-word: Latin and Greek terms"],
+  "e-homo": ["Homonyms", "Homophones", "Commonly confused words"],
+  "e-fib": ["Fill in the blank: grammar", "Fill in the blank: vocabulary", "Collocations", "Word-pair blanks"],
+  "e-cloze": ["Cloze: grammar-based blanks", "Cloze: vocabulary-based blanks", "Connectors and linkers", "Passage-flow strategy"],
+  "e-rc": ["Main idea and title", "Fact and inference questions", "Vocabulary in context", "Tone and author’s view", "Speed-reading practice"],
+  "e-pj": ["Opening-sentence method", "Connectors and pronoun links", "Chronology and logic"],
+  "g-pol": ["Constitution making and Preamble", "Salient features, Parts, Schedules, Articles", "Fundamental Rights", "DPSP and Fundamental Duties", "President and Vice-President", "Parliament and procedures", "PM, Council of Ministers", "Governor, State Legislature, CM", "Judiciary and writs", "Constitutional bodies", "Panchayati Raj and municipalities", "Centre–state relations and Emergency", "Amendments and important Acts"],
+  "g-anc": ["Stone Age and Indus Valley", "Vedic age", "Mahajanapadas, Buddhism and Jainism", "Maurya, Gupta and post-Gupta"],
+  "g-med": ["Delhi Sultanate", "Mughal empire", "Bhakti, Sufi and regional kingdoms"],
+  "g-mod": ["European arrival and British conquest", "Revolt of 1857", "Social reform movements", "Early nationalism and INC", "Gandhian era: NCM, CDM, QIM", "Revolutionaries, INA and independence", "Acts 1773–1947 and Governor-Generals"],
+  "g-cult": ["Architecture", "Dance and music", "Painting and handicrafts", "Festivals, languages, UNESCO sites"],
+  "g-igeo": ["Physiography", "Rivers and drainage", "Climate, soils and vegetation", "Agriculture, minerals and industries", "Transport and census"],
+  "g-wgeo": ["Earth, latitudes and time zones", "Atmosphere and winds", "Continents, oceans, major features"],
+  "g-bio": ["Cell and tissues", "Plant life and reproduction", "Human body: digestion, circulation, respiration", "Nutrition, vitamins, diseases", "Nervous, excretory, reproductive systems, genetics"],
+  "g-phy": ["Motion, force and gravitation", "Work, energy, power, heat", "Light and sound", "Electricity and magnetism", "Units and measurements"],
+  "g-chem": ["Matter, atoms, periodic table", "Acids, bases and salts", "Metals and non-metals", "Carbon compounds and daily-life chemistry"],
+  "g-env": ["Ecosystem and biodiversity", "National parks and sanctuaries", "Pollution", "Climate change and conventions"],
+  "g-eco": ["GDP, inflation and money", "Banking and RBI", "Budget, taxes, GST", "Five-year plans and NITI Aayog", "Poverty, unemployment, schemes"],
+  "g-static": ["International organisations and HQs", "Countries, capitals, currencies", "Books, authors, awards", "Important days and themes", "Abbreviations"],
+  "g-sch": ["Government schemes", "Important days", "People in the news and appointments"],
+  "g-sports": ["Tournaments and trophies", "Awards: Bharat Ratna, Padma, Nobel", "Books and authors"],
+  "g-ca": ["National news", "International news", "Economy and banking news", "Sports news", "Science and tech news", "Appointments"],
+  "g-comp": ["Computer basics and generations", "Hardware, software and memory", "Internet and MS Office", "Abbreviations and shortcuts"],
+  "r-code": ["Letter coding", "Number coding", "Mixed and substitution coding"],
+  "r-analogy": ["Word analogy", "Number analogy", "Letter analogy"],
+  "r-series": ["Number series", "Letter series", "Missing and wrong term", "Alpha-numeric series"],
+  "r-seat": ["Linear arrangement", "Circular arrangement", "Table and day puzzles"],
+  "r-syl": ["Two-statement syllogism", "Some, all and no conclusions", "Possibility cases"],
+  "r-dir": ["Distance and direction", "Shadow and turns", "Final position"],
+  "r-blood": ["Single-line relations", "Coded relations", "Family tree"],
+  "r-venn": ["Venn representation", "Counting overlaps"],
+  "r-verbal": ["Statement and assumption", "Statement and conclusion", "Course of action", "Strong and weak arguments"],
+  "r-matrix": ["Matrix reasoning", "Arithmetical reasoning", "Word formation"],
+  "r-math": ["Symbol replacement", "Fictional operations"],
+  "r-nv": ["Mirror and water image", "Paper folding", "Embedded figures", "Cube and dice", "Counting figures", "Series completion"],
+  "r-odd": ["Odd one out", "Ranking and order"]
+};
+Object.values(TOPICS).forEach(t => { t.subs = SUBS[t.id] || []; });
+
+// One lesson per PDF “day”. Each is a topic plus a sub-topic. “Block test” lessons are 30-question tests.
+const LESSONS = {
+  quant: [
+    ["q-number", "Divisibility rules (2–13)"], ["q-number", "Remainder theorem and cyclicity"], ["q-number", "Unit digit and last two digits"], ["q-number", "Factors, number of factors, primes"],
+    ["q-hcf", "HCF and LCM methods"], ["q-hcf", "HCF and LCM word problems and fractions"], ["q-simp", "Surds: rationalisation and comparison"], ["q-simp", "Indices: laws and equations"],
+    ["q-simp", "BODMAS, simplification and approximation"], ["q-number", "Block test: number system, HCF/LCM, simplification"],
+    ["q-pct", "Percentage basics and fraction equivalents"], ["q-pct", "Successive change, population and depreciation"], ["q-pct", "Expenditure, income, election and marks"], ["q-pct", "Percentage in ratio form and mixed word problems"],
+    ["q-pl", "CP, SP, profit and loss percentage"], ["q-pl", "Successive profit and loss, mixed articles"], ["q-disc", "Marked price, discount and successive discounts"], ["q-disc", "Discount with profit, buy-get-free offers"],
+    ["q-pl", "Dishonest shopkeeper (false weights)"], ["q-pct", "Block test: percentage, profit and loss, discount"],
+    ["q-ratio", "Ratio basics: comparing and dividing"], ["q-ratio", "Proportion, variation and mean proportion"], ["q-ratio", "Ratio of ages, money and changes"], ["q-part", "Partnership: investment × time"],
+    ["q-part", "Partnership with withdrawals, working and sleeping partners"], ["q-mix", "Alligation rule and mean price"], ["q-mix", "Repeated replacement and mixing strengths"], ["q-avg", "Simple and weighted average"],
+    ["q-avg", "Change in average, consecutive numbers"], ["q-ratio", "Block test: ratio, partnership, mixture, average"],
+    ["q-tw", "Time and work: efficiency and LCM method"], ["q-tw", "Alternate days, leaving and joining"], ["q-tw", "Work and wages"], ["q-tw", "Pipes and cisterns"], ["q-tw", "Block test: time and work, wages, pipes"],
+    ["q-tsd", "Speed, time, distance and average speed"], ["q-tsd", "Relative speed: meeting and catch-up"], ["q-tsd", "Late, early, circular track and usual speed"], ["q-train", "Trains: pole, platform and person"],
+    ["q-train", "Two trains, same and opposite direction"], ["q-boat", "Boats and streams"], ["q-tsd", "Block test: TSD, trains, boats and streams"],
+    ["q-si", "Simple interest"], ["q-si", "Compound interest: yearly, half-yearly, quarterly"], ["q-si", "CI and SI difference, instalments"], ["q-alg", "Basic identities and cubes"],
+    ["q-alg", "x + 1/x chains and value-based questions"], ["q-alg", "a + b + c = 0 and cube-sum identities"], ["q-alg", "Linear equations, one and two variables"], ["q-alg", "Quadratic equations and roots"],
+    ["q-alg", "Maximum, minimum values and inequalities"], ["q-alg", "Block test: interest and algebra"],
+    ["q-geo", "Lines, angles, triangles, centres, congruence, similarity"], ["q-circ", "Circles, tangents, polygons and quadrilaterals"], ["q-mens", "Mensuration: 2D and 3D solids"], ["q-trig", "Trig ratios, identities and simplification"],
+    ["q-hd", "Heights and distances"], ["q-di", "Data interpretation: table, bar and line graph"], ["q-di", "Data interpretation: pie chart, histogram, mixed"], ["q-geo", "Block test: geometry, mensuration, trig, DI"]
+  ],
+  eng: [
+    ["e-pos", "Nouns: types, number, gender"], ["e-pos", "Pronouns: types and agreement"], ["e-sva", "Subject–verb agreement: basic rules"], ["e-sva", "Subject–verb agreement: special cases"],
+    ["e-tense", "Present tenses"], ["e-tense", "Past tenses"], ["e-tense", "Future tenses and tense sequence"], ["e-tense", "Conditionals (if clauses)"],
+    ["e-pos", "Verbs: types, modals and auxiliaries"], ["e-pos", "Adjectives and adverbs (modifiers)"], ["e-pos", "Degrees of comparison and placement of modifiers"], ["e-prep", "Prepositions: time, place and fixed"],
+    ["e-prep", "Conjunctions and correlative pairs"], ["e-art", "Articles, then a block test on grammar fundamentals"],
+    ["e-voice", "Active to passive: simple tenses"], ["e-voice", "Passive: modals, continuous, perfect, special"], ["e-narr", "Direct to indirect: statements"], ["e-narr", "Questions, commands and requests"],
+    ["e-narr", "Tense and pronoun changes"], ["e-simp", "Block test: voice, narration, sentence improvement"],
+    ["e-cloze", "Cloze test: grammar-based blanks"], ["e-cloze", "Cloze test: vocabulary and connectors"], ["e-pj", "Para jumbles: opening-sentence method"], ["e-pj", "Para jumbles: connectors and logic"],
+    ["e-rc", "Reading comprehension: main idea and title"], ["e-rc", "Reading comprehension: facts and inference"], ["e-rc", "Reading comprehension: vocabulary in context"], ["e-rc", "Reading comprehension: tone and author’s view"],
+    ["e-err", "Error spotting: mixed grammar practice"], ["e-cloze", "Block test: cloze, para jumbles, reading comprehension"]
+  ],
+  ga: [
+    ["g-pol", "Constitution making and the Preamble"], ["g-pol", "Salient features, Parts, Schedules, Articles"], ["g-pol", "Fundamental Rights"], ["g-pol", "DPSP and Fundamental Duties"], ["g-pol", "President and Vice-President"],
+    ["g-pol", "Parliament: Lok Sabha, Rajya Sabha, procedures"], ["g-pol", "PM, Council of Ministers and Cabinet"], ["g-pol", "Governor, State Legislature, CM"], ["g-pol", "Judiciary: Supreme Court, High Courts, writs"],
+    ["g-pol", "Constitutional bodies: EC, CAG, UPSC, Finance Commission"], ["g-pol", "Panchayati Raj and municipalities"], ["g-pol", "Centre–state relations and Emergency"], ["g-pol", "Amendments, important Articles and Acts"],
+    ["g-pol", "Important committees, tribunals and quick revision"], ["g-pol", "Block test: Indian polity"],
+    ["g-anc", "Stone Age and Indus Valley"], ["g-anc", "Vedic age and Mahajanapadas"], ["g-anc", "Buddhism, Jainism and the Mauryas"], ["g-anc", "Guptas and post-Gupta period"],
+    ["g-med", "Delhi Sultanate"], ["g-med", "Mughal empire"], ["g-med", "Bhakti, Sufi and regional kingdoms"],
+    ["g-mod", "European arrival and British conquest"], ["g-mod", "Revolt of 1857"], ["g-mod", "Social reform movements"], ["g-mod", "Early nationalism: INC 1885–1905"], ["g-mod", "Gandhian era: NCM, CDM, QIM"],
+    ["g-mod", "Revolutionaries, INA, Cabinet Mission and independence"], ["g-mod", "Acts 1773–1947 and Governor-Generals"], ["g-mod", "Block test: Indian history"],
+    ["g-igeo", "Physiography and mountains"], ["g-igeo", "Rivers and drainage"], ["g-igeo", "Climate, soils and vegetation"], ["g-igeo", "Agriculture, minerals and industries"],
+    ["g-wgeo", "Earth, latitudes, time zones, atmosphere"], ["g-wgeo", "Continents, oceans and major features"],
+    ["g-phy", "Motion, force and gravitation"], ["g-phy", "Work, energy, power and heat"], ["g-phy", "Light and sound"], ["g-phy", "Electricity, magnetism and units"],
+    ["g-chem", "Matter, atoms and the periodic table"], ["g-chem", "Acids, bases, metals and non-metals"], ["g-chem", "Carbon compounds and daily-life chemistry"],
+    ["g-bio", "Cell, tissues and plant life"], ["g-bio", "Human body: digestion, circulation, respiration"], ["g-bio", "Nutrition, vitamins and diseases"], ["g-bio", "Nervous, excretory, reproductive systems, genetics"],
+    ["g-env", "Ecosystem, biodiversity and national parks"], ["g-env", "Pollution and climate change"], ["g-igeo", "Block test: geography, science, environment"],
+    ["g-eco", "GDP, inflation and money"], ["g-eco", "Banking, RBI and monetary policy"], ["g-eco", "Budget, taxes, GST, NITI Aayog, five-year plans"], ["g-cult", "Art, culture and architecture"],
+    ["g-cult", "Dance, music, festivals and UNESCO sites"], ["g-static", "International organisations and headquarters"], ["g-static", "Countries, capitals and currencies"], ["g-sports", "Awards, books and sports"],
+    ["g-sch", "Schemes, important days, people in the news"], ["g-ca", "Last 8 months of current affairs, then a block test"]
+  ]
+};
+const UNITS = {};
+for (const sec of Object.keys(LESSONS)) UNITS[sec] = LESSONS[sec].map(([t, s], i) => ({ t, s, n: i + 1, sec, key: t + "|" + s, test: /^Block test|block test/.test(s) }));
+const UNIT_TOTAL = { quant: UNITS.quant.length, eng: UNITS.eng.length, ga: UNITS.ga.length };
+const VOCAB = [].concat(...["e-syn", "e-ows", "e-idiom", "e-spell", "e-homo", "e-fib"].map(id => SUBS[id].map(s => ({ t: id, s }))));
+const vocabFor = (w, i) => { const v = VOCAB[(Math.max(1, w) * 2 + i) % VOCAB.length]; return v.s; };
+function learnWeeks(total) { const [a, b] = phaseSplit(total); const out = []; for (let w = 1; w <= a + b; w++) if (!isLight(w)) out.push(w); return out; }
+function weekUnits(sec, w, total) {
+  const lw = learnWeeks(total), k = lw.indexOf(w); if (k < 0) return [];
+  const U = UNITS[sec], n = lw.length; return U.slice(Math.floor(k * U.length / n), Math.floor((k + 1) * U.length / n));
+}
+function unitsThrough(sec, w, total) {
+  const lw = learnWeeks(total), k = lw.filter(x => x <= w).length; if (!k) return 0;
+  return Math.floor(k * UNITS[sec].length / lw.length);
+}
+function revisionTopics(sec, w, total) {
+  const [a, b] = phaseSplit(total), rw = []; for (let x = a + b + 1; x <= total; x++) if (!isLight(x)) rw.push(x);
+  const k = rw.indexOf(w); if (k < 0) return null;
+  const L = []; UNITS[sec].forEach(u => { if (!L.includes(u.t)) L.push(u.t); });
+  return L.slice(Math.floor(k * L.length / rw.length), Math.floor((k + 1) * L.length / rw.length));
+}
+
+
 // learning order: 6 content stages (M1–M6), mapped across any plan length
 const STAGES = {
   quant: [
@@ -695,7 +962,7 @@ const STAGES = {
     ["g-ca", "g-static", "g-sports"]
   ]
 };
-const RSN_ROT = ["r-code", "r-analogy", "r-series", "r-seat", "r-syl", "r-dir", "r-blood", "r-venn", "r-verbal", "r-matrix", "r-math", "r-nv", "r-odd"];
+const RSN_ROT = ["r-code", "r-blood", "r-syl", "r-series", "r-dir", "r-nv", "r-analogy", "r-seat", "r-venn", "r-verbal", "r-matrix", "r-math", "r-odd"];
 const SPEED_ROT = ["q-avg", "q-hd", "q-di", "q-disc", "q-ratio"];
 const STAGE_EXIT = [
   "First sectional at 60% accuracy; all 100 questions tagged; 10 mistakes closed",
@@ -714,7 +981,7 @@ const TIER2_NOTE = [
   "Tier 2 mock every second Saturday plus a Tier 1 mock"
 ];
 const RES = {
-  quant: "Aditya Ranjan on YouTube: search this topic in the channel",
+  quant: "Maths playlists: Tarun Sir (Adda247, 86 videos) or Aditya Ranjan (41 videos). Search the sub-topic",
   ga: "SSC Parmar on YouTube: search this topic in the channel",
   ca: "SSC Parmar daily current affairs",
   eng: "Free practice sets",
@@ -726,8 +993,8 @@ const TAGS = { commute: "Commute audio", break: "Break, phone", home: "Home", fi
 const KINDS = { concept: "Concept", practice: "Practice", pyq: "PYQ", revision: "Revision", mock: "Test", analysis: "Analysis", speed: "Speed drill", replay: "Paper replay", setup: "Setup", other: "Other" };
 const TIER_RANK = { floor: 0, target: 1, stretch: 2 };
 const TIER_NAME = { floor: "Floor", target: "Target", stretch: "Stretch" };
-const DAYTYPES = ["moderate", "hard", "easy", "moderate", "easy", "mock", "repair"]; // Mon..Sun
-const TYPE_NAME = { easy: "Easy", moderate: "Moderate", hard: "Hard", mock: "Mock day", repair: "Repair day" };
+const DAYTYPES = ["moderate", "moderate", "moderate", "moderate", "moderate", "moderate", "moderate"]; // Mon..Sun
+const TYPE_NAME = { easy: "Easy day", moderate: "Study day", hard: "Hard day", mock: "Mock day", repair: "Repair day" };
 const ABSORB = { easy: 15, moderate: 20, hard: 15, mock: 45, repair: 60 };
 const REV_OFF = [1, 3, 7, 21, 45];
 const REV_MIN = [10, 10, 15, 20, 20];
@@ -820,16 +1087,20 @@ const _wt = new Map();
 function weekTopics(w) {
   const total = totalFor(w), key = w + ":" + total;
   if (_wt.has(key)) return _wt.get(key);
-  const s = stageOf(w, total), res = { stage: s };
+  const s = stageOf(w, total), res = { stage: s, u: {} };
   for (const sec of ["quant", "eng", "ga"]) {
     const list = STAGES[sec][s];
     if (w === 0) { res[sec] = [list[0]]; continue; }
+    const us = weekUnits(sec, w, total);
+    if (us.length) { res.u[sec] = us; const t = []; us.forEach(u => { if (!t.includes(u.t)) t.push(u.t); }); res[sec] = t; continue; }
     if (isLight(w)) { const rp = list.filter(id => TOPICS[id].group === "repair"); res[sec] = (rp.length ? rp : list).slice(0, 2); continue; }
+    const rt = revisionTopics(sec, w, total);
+    if (rt && rt.length) { res.u[sec] = rt.map(t => ({ t, s: "all sub-topics", rev: true, key: t + "|rev" })); res[sec] = rt; continue; }
     const ws = stageWeeks(s, total), n = Math.max(1, ws.length), i = Math.max(0, ws.indexOf(w));
     const a = Math.floor(i * list.length / n), b = Math.floor((i + 1) * list.length / n);
     res[sec] = b > a ? list.slice(a, b) : [list[Math.min(a, list.length - 1)]];
   }
-  res.rsn = [RSN_ROT[w % RSN_ROT.length]];
+  res.rsn = [RSN_ROT[(w - 1 + RSN_ROT.length) % RSN_ROT.length]];
   _wt.set(key, res);
   return res;
 }
@@ -844,38 +1115,82 @@ function ctxFor(w) {
     q1: wt.quant[0], q2: wt.quant[1] || wt.quant[0], e1: wt.eng[0], e2: wt.eng[1] || wt.eng[0],
     g1: wt.ga[0], g2: wt.ga[1] || wt.ga[0], r1: wt.rsn[0], sp: SPEED_ROT[w % SPEED_ROT.length],
     learn: (phase === 3 || light) ? "revision" : "concept",
-    fullMock: w >= p1, tier2: wt.stage >= 4 && w % 2 === 0, replay: replayOf(w, total)
+    fullMock: w >= p1, tier2: wt.stage >= 4 && w % 2 === 0, replay: replayOf(w, total),
+    u: wt.u || {}, firstDow: w === 1 ? mon0(S().start) : 0, v1: vocabFor(w, 0), v2: vocabFor(w, 1)
   };
 }
 const audio = (c, id) => c.learn === "concept" ? `Audio: ${tn(id)}` : `Audio recap: ${tn(id)} formulas and methods`;
+/* ---- day-wise lessons: which sub-topics a slot covers, tests, and weekly checkpoints ---- */
+const UL = sl => { const g = []; sl.forEach(u => { const l = g[g.length - 1]; if (l && l.t === u.t) l.s.push(u.s); else g.push({ t: u.t, s: [u.s] }); }); return g.map(x => { const j = x.s.join("; "); return j.toLowerCase().startsWith(tn(x.t).toLowerCase().slice(0, 10)) ? j : `${tn(x.t)}: ${j}`; }).join(" then "); };
+const SLOT_DAYS = { quant: [0, 1, 3, 6], eng: [1, 4], ga: [0, 3] };   // Mon, Tue, Thu, Sun / Tue, Fri / Mon, Thu
+function pick(c, sec, d) {
+  const L = ((c.u && c.u[sec]) || []).filter(u => !u.test); if (!L.length) return null;
+  const days = SLOT_DAYS[sec].filter(x => x >= (c.firstDow || 0) && !(c.w === 1 && x === 6)), k = days.indexOf(d), n = days.length; if (k < 0) return null;
+  const r = L.slice(Math.floor(k * L.length / n), Math.floor((k + 1) * L.length / n)); return r.length ? r : null;
+}
+const UT = (task, sl) => (sl && sl.length && !sl[0].rev ? { ...task, sub: sl.map(u => u.s).join("; "), ukeys: sl.map(u => u.key) } : task);
+const subOf = sl => (sl && sl.length && !sl[0].rev ? sl[0].s : "");
+function lessonTask(tier, tag, min, subj, sl, pre, fbKind, fbTopic, fbTitle, res, q, time) {
+  if (sl && !sl[0].rev) return UT(T(tier, tag, min, "concept", subj, sl[0].t, `${pre}${UL(sl)}`, res, q, time), sl);
+  return T(tier, tag, min, fbKind, subj, fbTopic, fbTitle, res, q, time);
+}
+function blockTests(c) {
+  const tq = [].concat(...["quant", "eng", "ga"].map(k => ((c.u && c.u[k]) || []).filter(u => u.test)));
+  if (!tq.length) return null;
+  const q = {}; tq.forEach(u => { q[u.sec] = (q[u.sec] || 0) + 30; });
+  return UT(T("target", "fixed", 60, "practice", "mixed", null, `Block test${tq.length > 1 ? "s" : ""}, 30 questions each: ${tq.map(u => u.s.replace(/^Block test: /i, "")).join("; ")}. Then analyse every mistake`, RES.pyq, q, "15:30"), tq);
+}
+function weekCheckpoint(c) {
+  const secs = [["quant", "Quant"], ["eng", "English"], ["ga", "GA"]], lines = [];
+  let title;
+  if (c.light) {
+    const th = secs.map(([k, n]) => `${n} ${unitsThrough(k, c.w, c.total)} of ${UNIT_TOTAL[k]}`);
+    title = `Month checkpoint: by now ${th.join(", ")} lessons should be done`;
+    secs.forEach(([k, n]) => lines.push(`${n}: lessons 1–${unitsThrough(k, c.w, c.total)} are done. Count your ticks; any gap goes into the parking lot.`));
+  } else if (c.phase < 3) {
+    const parts = [];
+    secs.forEach(([k, n]) => { const us = c.u[k] || []; if (us.length) { parts.push(`${n} ${us.length}`); lines.push(`${n}: lessons ${us[0].n}–${us[us.length - 1].n} of ${UNIT_TOTAL[k]}: ${us.map(u => u.s).join("; ")}.`); } });
+    title = `Week ${c.w} checkpoint: ${parts.join(", ")} lessons`;
+  } else {
+    title = `Week ${c.w} revision checkpoint`;
+    secs.forEach(([k, n]) => { const us = c.u[k] || []; if (us.length) lines.push(`${n}: revised ${us.map(u => tn(u.t)).join(", ")}.`); });
+  }
+  const q = WT[c.phase].q;
+  return { ...T("target", "fixed", 15, "analysis", "mixed", null, title, "", {}, "08:45"), howSteps: [...lines, `Question goal this week: ${q.quant} Quant, ${q.eng} English, ${q.ga} GA, ${q.rsn} Reasoning${c.light ? " (about half in a light week)" : ""}.`, "Anything not finished moves to next week. Write one line on why.", "Write the one sub-topic that felt weakest. It goes into next Sunday’s weakest-topic slot."], howDone: "Every lesson is ticked or moved, and the weakest sub-topic is written down." };
+}
 const TEMPL = {
   moderate(c, d) {
-    const qt = d === 3 ? c.q2 : c.q1, gt = d === 3 ? c.g2 : c.g1;
+    const gq = pick(c, "quant", d), gg = pick(c, "ga", d);
+    const qt = gq ? gq[0].t : (d === 3 ? c.q2 : c.q1), gt = gg ? gg[0].t : (d === 3 ? c.g2 : c.g1);
+    const qsub = subOf(gq);
     const s = (c.phase === 3 && d === 3)
       ? T("stretch", "home", 30, "mock", "mixed", null, "Mid-week sectional: Quant and English, 15 min each", RES.mock, { quant: 25, eng: 25 })
-      : T("stretch", "home", 30, "pyq", "quant", qt, `PYQs on ${tn(qt)}`, RES.pyq, { quant: 15 });
+      : T("stretch", "home", 30, "pyq", "quant", qt, `PYQs on ${tn(qt)}${qsub ? `: ${qsub}` : ""}`, RES.pyq, { quant: 15 });
     return [
-      T("floor", "commute", 30, c.learn, "quant", qt, audio(c, qt), RES.quant),
+      lessonTask("floor", "commute", 30, "quant", gq, "Audio lesson: ", c.learn, qt, audio(c, qt), RES.quant),
       T("floor", "commute", 15, "revision", "mixed", null, "Audio recap of topics due today; answer aloud"),
-      T("floor", "home", 15, "practice", "quant", qt, `5 ${tn(qt)} questions, then log any mistake`, "", { quant: 5 }),
-      T("target", "commute", 20, "concept", "ga", gt, `GA audio: ${tn(gt)}, or today’s current affairs`, RES.ga),
-      T("target", "break", 20, "practice", "ga", "g-ca", "Phone quiz: 10 GA questions and 10 vocabulary words", "No break today? Do it at night", { ga: 10, eng: 10 }),
+      T("floor", "home", 15, "practice", "quant", qt, `5 ${tn(qt)} questions${qsub ? ` (${qsub})` : ""}, then log any mistake`, "", { quant: 5 }),
+      lessonTask("target", "commute", 20, "ga", gg, "GA audio: ", "concept", gt, `GA audio: ${tn(gt)}, or today’s current affairs`, RES.ga),
+      T("target", "break", 20, "practice", "ga", "g-ca", `Phone quiz: 10 GA questions and 10 vocabulary words (${c.v1})`, "No break today? Do it at night", { ga: 10, eng: 10 }),
       T("target", "home", 20, "practice", "quant", qt, "10 timed mixed questions at 36 s each, then the error log", "", { quant: 10 }),
       s
     ];
   },
   hard(c) {
+    const gq = pick(c, "quant", 1), ge = pick(c, "eng", 1);
+    const qt = gq ? gq[0].t : c.q1, et = ge ? ge[0].t : c.e1;
+    const qsub = subOf(gq), esub = subOf(ge);
     const s = c.w === 1 ? T("stretch", "home", 30, "setup", "quant", "q-alg", "Build your formula card: algebra and trig identities (Q61, Q62, Q71, Q74)")
       : c.stage >= 2
-      ? T("stretch", "home", 30, "practice", "quant", c.q1, `Tier 2 depth: 10 harder ${tn(c.q1)} questions`, RES.pyq, { quant: 10 })
+      ? T("stretch", "home", 30, "practice", "quant", qt, `Tier 2 depth: 10 harder ${tn(qt)} questions`, RES.pyq, { quant: 10 })
       : T("stretch", "home", 30, "practice", "eng", "e-err", "Error-spotting set, 15 questions", RES.eng, { eng: 15 });
     return [
-      T("floor", "commute", 30, c.learn, "quant", c.q1, c.learn === "concept" ? (mondayOfWeek(c.w) < S().start ? `Audio: ${tn(c.q1)}, the first lecture` : `Audio: ${tn(c.q1)}, second pass on the method`) : audio(c, c.q1), RES.quant),
+      lessonTask("floor", "commute", 30, "quant", gq, "Audio lesson: ", c.learn, c.q1, c.learn === "concept" ? (mondayOfWeek(c.w) < S().start ? `Audio: ${tn(c.q1)}, the first lecture` : `Audio: ${tn(c.q1)}, second pass on the method`) : audio(c, c.q1), RES.quant),
       T("floor", "commute", 20, "revision", "mixed", null, "Audio recap of topics due today, then vocabulary by ear"),
-      T("floor", "home", 25, "practice", "quant", c.q1, `8 ${tn(c.q1)} questions untimed, then check each method`, "", { quant: 8 }),
-      T("target", "commute", 25, c.learn === "concept" ? "concept" : "revision", "eng", c.e1, `Audio: English rule explainer on ${tn(c.e1).toLowerCase()}`, "Search the rule on any free English channel"),
-      T("target", "break", 20, "practice", "eng", c.e1, `Phone quiz: 15 English questions on ${tn(c.e1).toLowerCase()}`, RES.eng, { eng: 15 }),
-      T("target", "home", 30, "practice", "quant", c.q1, `20 ${tn(c.q1)} questions; move to timed sets at 80% on 20`, "", { quant: 20 }),
+      T("floor", "home", 25, "practice", "quant", qt, `8 ${tn(qt)} questions untimed${qsub ? ` (${qsub})` : ""}, then check each method`, "", { quant: 8 }),
+      lessonTask("target", "commute", 25, "eng", ge, "English audio: ", c.learn === "concept" ? "concept" : "revision", et, `Audio: English rule explainer on ${tn(et).toLowerCase()}`, "Search the rule on any free English channel"),
+      T("target", "break", 20, "practice", "eng", et, `Phone quiz: 15 English questions on ${(esub || tn(et)).toLowerCase()}`, RES.eng, { eng: 15 }),
+      T("target", "home", 30, "practice", "quant", qt, `20 ${tn(qt)} questions; move to timed sets at 80% on 20`, "", { quant: 20 }),
       s
     ];
   },
@@ -886,17 +1201,20 @@ const TEMPL = {
         T("floor", "commute", 20, "revision", "mixed", null, "Audio: spaced-queue recap of topics due today; answer aloud"),
         T("floor", "commute", 15, "concept", "ga", "g-ca", "SSC Parmar: today’s current affairs, 10 points", RES.ca),
         T("floor", "home", 10, "revision", "quant", c.q1, `5 questions on ${tn(c.q1)}`, "", { quant: 5 }),
-        T("target", "break", 15, "practice", "eng", "e-spell", "Phone: spelling and vocabulary set, 10 words", "", { eng: 10 }),
+        T("target", "break", 15, "practice", "eng", "e-spell", `Phone: 10 vocabulary words (${c.v1}) and 5 spelling checks`, "", { eng: 10 }),
         ret ? T("target", "home", 15, "revision", "mixed", null, "Retention check: 20 quick questions from topics learned 14+ days ago", "", { quant: 8, eng: 6, ga: 6 })
             : T("target", "home", 15, "practice", "eng", "e-err", "Error-spotting set, 10 questions", RES.eng, { eng: 10 }),
         T("stretch", "home", 30, "practice", "rsn", c.r1, `Reasoning: 15 mixed questions, ${tn(c.r1).toLowerCase()} first`, RES.rsn, { rsn: 15 })
       ];
     }
+    const ge = pick(c, "eng", 4);
+    const eng = !ge || ge[0].rev ? T("target", "break", 15, "practice", "eng", "e-idiom", `Phone quiz: 10 vocabulary words and 5 idioms (${c.v2})`, "", { eng: 15 })
+      : UT(T("target", "break", 15, "concept", "eng", ge[0].t, `English lesson: ${UL(ge)}, then 5 practice questions`, RES.eng, { eng: 5 }), ge);
     return [
       T("floor", "commute", 20, "concept", "ga", "g-sch", "SSC Parmar: this week’s schemes, important days, people in the news and portfolios", RES.ca),
       T("floor", "commute", 15, "revision", "mixed", null, "Audio recap of topics due today"),
       T("floor", "home", 10, "practice", "ga", c.g1, "GA quiz: 10 questions on this week’s topics", "", { ga: 10 }),
-      T("target", "break", 15, "practice", "eng", "e-idiom", "Phone quiz: 10 vocabulary words and 5 idioms", "", { eng: 15 }),
+      eng,
       T("target", "home", 15, "practice", "rsn", c.r1, "Reasoning quiz: 10 questions at 30 s each", RES.rsn, { rsn: 10 }),
       T("stretch", "home", 30, "speed", "quant", c.sp, `Speed drill: 15 ${tn(c.sp)} questions, a topic you got right`, "", { quant: 15 })
     ];
@@ -920,7 +1238,7 @@ const TEMPL = {
       T("floor", "fixed", 60, "mock", "mixed", null, `${name}, 15 min per section`, RES.mock, q, "09:00"),
       T("floor", "fixed", 120, "analysis", "mixed", null, "Analysis and mistake logging", "", {}, "10:30"),
       third,
-      T("target", "fixed", 60, "practice", "mixed", null, "Repair, part two: the second weakest topic", "", { quant: 10, eng: 10 }, "15:30"),
+      blockTests(c) || T("target", "fixed", 60, "practice", "mixed", null, "Repair, part two: the second weakest topic", "", { quant: 10, eng: 10 }, "15:30"),
       T("target", "fixed", 90, "practice", "ga", "g-ca", "GA and current-affairs practice and recap", RES.ca, { ga: 40 }, "17:00"),
       T("target", "fixed", 30, "revision", "mixed", null, "Flashcards: formulas, spellings and static GK", "", {}, "18:30"),
       T("stretch", "fixed", 60, "pyq", "mixed", null, "Extra: one PYQ sectional", RES.pyq, { quant: 25 }, "19:00")
@@ -930,8 +1248,14 @@ const TEMPL = {
     const eng = c.w >= 2
       ? T("target", "fixed", 60, "practice", "eng", "e-cloze", "Timed English: one cloze passage, one reading-comprehension passage, one error-spotting set", RES.eng, { eng: 25 }, "10:30")
       : T("target", "fixed", 60, "practice", "eng", c.e1, "Timed English set and PYQs", RES.pyq, { eng: 25 }, "10:30");
-    const weak = c.q2;
+    const weak = c.q2, gq = pick(c, "quant", 6), cp = weekCheckpoint(c);
+    const fresh = (min, time, orig) => {
+      const L = gq && !gq[0].rev ? gq : [];
+      if (L.length) return UT(T("target", "fixed", min, "concept", "quant", L[0].t, `New lesson: ${UL(L)}, then 20+ questions`, RES.quant, { quant: 20 }, time), L);
+      return orig;
+    };
     if (c.light) return [
+      cp,
       T("floor", "fixed", 90, "revision", "mixed", null, "Weekly revision block: formulas from memory, 15 Quant, 20 English, 50 GA, 10 Reasoning", "", { quant: 15, eng: 20, ga: 50, rsn: 10 }, "09:00"),
       T("floor", "fixed", 90, "analysis", "mixed", null, "Monthly consolidation, day 2: analysis and repair of the 100-question test", "", {}, "10:30"),
       T("floor", "fixed", 30, "practice", "mixed", null, "Parking-lot catch-up (see this week’s list)", "", {}, "12:00"),
@@ -946,12 +1270,13 @@ const TEMPL = {
       aft.push(T("target", "fixed", 60, "setup", "mixed", null, "Confirm why each CGL 2026 mistake happened, in the Review tab", "Your response sheets", {}, "15:30"));
     } else if (c.replay) {
       aft.push(T("target", "fixed", 30, "replay", c.replay.sec, null, `Paper replay ${c.replay.n}: your ${SEC[c.replay.sec].n} section, 25 questions in 15 min${c.replay.n === 3 ? ", explain each in one line" : ""}`, "Your own response sheet", { [c.replay.sec]: 25 }, "15:00"));
-      aft.push(T("target", "fixed", 60, c.learn, "quant", weak, `Weakest topic or a new concept: 20+ questions on ${tn(weak)}`, RES.quant, { quant: 20 }, "15:30"));
+      aft.push(fresh(60, "15:30", T("target", "fixed", 60, c.learn, "quant", weak, `Weakest topic or a new concept: 20+ questions on ${tn(weak)}`, RES.quant, { quant: 20 }, "15:30")));
     } else if (false) {
     } else {
-      aft.push(T("target", "fixed", 90, c.learn, "quant", weak, `New concept or weakest topic: 20+ questions on ${tn(weak)}`, RES.quant, { quant: 20 }, "15:00"));
+      aft.push(fresh(90, "15:00", T("target", "fixed", 90, c.learn, "quant", weak, `New concept or weakest topic: 20+ questions on ${tn(weak)}`, RES.quant, { quant: 20 }, "15:00")));
     }
     return [
+      cp,
       T("floor", "fixed", 90, "practice", "quant", c.q1, "Timed Quant set and PYQs at 36 s a question", RES.pyq, { quant: 40 }, "09:00"),
       eng,
       T("floor", "fixed", 90, "revision", "mixed", null, "Weekly revision block: formulas from memory, 15 Quant, 20 English, 50 GA, 10 Reasoning", "", { quant: 15, eng: 20, ga: 50, rsn: 10 }, "12:00"),
@@ -1005,7 +1330,7 @@ function genDay(date) {
   const wi = weekInfo(date); let out = null;
   if (wi.w != null) {
     const w = wi.w, d = mon0(date), c = ctxFor(w), type = DAYTYPES[d];
-    let tasks = TEMPL[type](c, d);
+    let tasks = [];
     if (c.light) tasks = tasks.map(t => (t.tier === "floor" ? t : { ...t, min: r5(t.min * 0.5) }));
     tasks = tasks.map((t, i) => ({ ...t, id: `W${w}-${d}-${i}`, date, w, src: "plan" }));
     out = { date, w, phase: c.phase, type, light: c.light, stage: c.stage, tasks, ctx: c };
@@ -1171,12 +1496,17 @@ function currentPlanWeek() {
   if (wi.before) return hasKickoff() ? 0 : 1;
   return S().weeks;
 }
+function hasProgress() { return Object.values(state.st || {}).some(x => x && (x.s === "done" || x.s === "partial" || x.a)); }
+function ensureWindowFor(date) {
+  const st = S(), wi = weekInfo(date);
+  if (wi.w != null) return true;
+  if (wi.gap) return false;
+  if (wi.after) { let n = 0; while (weekInfo(date).after && st.weeks < 156 && n++ < 156) st.weeks++; clearCaches(); logChange("Plan made longer", `Now ${st.weeks} weeks so ${fmtD(date)} is inside it`); return weekInfo(date).w != null; }
+  if (wi.before) { if (hasProgress() || (st.gaps || []).length || st.freeze) return false; st.start = mondayOf(date); clearCaches(); logChange("Plan start moved", `Now ${fmtD(st.start)} so ${fmtD(date)} is inside it`); return true; }
+  return false;
+}
 function defaultSel() {
-  const t = today(), wi = weekInfo(t);
-  if (wi.w != null) return t;
-  if (wi.before) return S().start;
-  if (wi.after) return endDate();
-  return t;
+  return today();
 }
 
 /* ================= mutations ================= */
@@ -1318,6 +1648,22 @@ function mockScore(m) {
 }
 
 /* ================= detailed instructions for every task ================= */
+function subProgress() {
+  const out = {}, end = endDate();
+  for (let d = S().start; d <= end; d = addDays(d, 1)) {
+    const g = genDay(d);
+    (g.tasks || []).forEach(t => { if (!t.ukeys) return; const s = state.st[t.id]; if (s && s.rm) return; t.ukeys.forEach(k => { (out[k] ||= []).push({ date: (s && s.to) || d, done: !!(s && s.s === "done") }); }); });
+  }
+  return out;
+}
+function subsHtml(t, sp) {
+  const us = (UNITS[t.sec] || []).filter(u => u.t === t.id);
+  const done = us.filter(u => (sp[u.key] || []).some(x => x.done)).length;
+  const rows = us.map(u => { const a = sp[u.key] || [], dn = a.find(x => x.done); const st = dn ? `<span class="num">Done</span>` : a[0] ? `<span class="muted num">Planned ${fmtDM(a[0].date)}</span>` : `<span class="muted">Not scheduled</span>`; return `<div class="xs" style="display:flex;justify-content:space-between;gap:10px;padding:3px 0"><span>${u.n}. ${esc(u.s)}</span>${st}</div>`; }).join("");
+  const types = t.subs.length ? `<div class="xs muted" style="margin-top:6px"><b>Question types:</b> ${t.subs.map(esc).join(" · ")}</div>` : "";
+  if (!rows && !types) return "";
+  return `<details style="margin-top:6px"><summary class="xs muted" style="cursor:pointer">${us.length ? `Day-wise lessons: ${done} of ${us.length} done` : `Question types: ${t.subs.length}`}</summary>${rows}${types}</details>`;
+}
 function qCount(t) { return sum(Object.values(t.q || {})); }
 function searchFor(t) {
   const top = t.topicId && TOPICS[t.topicId] ? tn(t.topicId) : "";
@@ -1329,6 +1675,8 @@ function searchFor(t) {
   return "";
 }
 function howTo(t) {
+  if (t.src === "user") return { steps: String(t.note || "").split("\n").map(z => z.trim()).filter(Boolean), done: "", search: "", n: qCount(t) };
+  if (t.howSteps) return { steps: t.howSteps, done: t.howDone || "", search: "", n: 0 };
   const n = qCount(t), top = t.topicId && TOPICS[t.topicId] ? tn(t.topicId) : "the topic", timed = /timed|36 s|30 s|speed/i.test(t.title) || t.kind === "speed";
   const mist = t.topicId ? openMistakes(t.topicId) : [];
   let steps = [], done = "";
@@ -1426,6 +1774,7 @@ const MODE_NAME = { off: "Day off", light: "Light day", bonus: "Bonus day", floo
 
 /* ================= icons ================= */
 const IP = {
+  palette: '<circle cx="13.5" cy="6.5" r="1.2"/><circle cx="17.5" cy="10.5" r="1.2"/><circle cx="8.5" cy="7.5" r="1.2"/><circle cx="6.5" cy="12.5" r="1.2"/><path d="M12 2a10 10 0 1 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4a4.6 4.6 0 0 0 4.6-4.6C22 6 17.5 2 12 2z"/>',
   commute: '<path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.6"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.6"/>',
   break: '<rect x="7" y="2.5" width="10" height="19" rx="2.6"/><path d="M11 18.2h2"/>',
   home: '<path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/>',
@@ -1450,14 +1799,14 @@ function savedText() {
   if (save.status === "err" || Store.mode === "memory") return "Not saved";
   return "Saved to cloud";
 }
-function paintSaved() { document.querySelectorAll(".saved").forEach(el => { el.className = "saved " + (save.status === "saving" ? "saving" : (save.status === "err" || Store.mode === "memory") ? "err" : ""); el.textContent = savedText(); el.title = Store.mode === "firebase" ? "Saved to Firebase" : Store.mode === "browser" ? "Saved in this browser" : "This browser isn’t keeping your data"; }); }
+function paintSaved() { document.querySelectorAll(".saved").forEach(el => { el.className = "saved " + (save.status === "saving" ? "saving" : (save.status === "err" || Store.mode === "memory") ? "err" : ""); el.innerHTML = `<span class="stt">${savedText()}</span>`; el.title = Store.mode === "firebase" ? "Saved to Firebase" : Store.mode === "browser" ? "Saved in this browser" : "This browser isn’t keeping your data"; }); }
 function shell(body) {
   const nav = (cls) => TABS.map(([k, n]) => `<button data-a="tab" data-k="${k}" ${ui.tab === k ? 'aria-current="page"' : ""}>${cls === "tabs" ? ic(k) : ""}<span>${n}</span></button>`).join("");
   const err = (save.status === "err" || Store.mode === "memory")
     ? `<div class="notice err" role="alert"><span>${Store.mode === "memory" ? "This browser isn’t keeping your progress. Export a backup in Settings before you close the page." : "Your last change wasn’t saved. Check your connection, then try again."}</span><button class="link" data-a="retrysave">Try again</button></div>` : "";
   const restore = ui.offerRestore ? `<div class="notice"><span>No saved plan was found, but there’s a snapshot from ${fmtD(ui.offerRestore.at.slice(0, 10))}.</span><button class="link" data-a="restoresnap" data-id="${ui.offerRestore.id}">Restore</button></div>` : "";
   return `<header class="top"><span class="brand">CGL plan</span><nav class="toptabs" aria-label="Sections">${nav("top")}</nav><span class="saved"></span>
-      <button class="ibtn" data-a="tab" data-k="settings" aria-label="Settings">${ic("gear")}</button></header>
+      <button class="ibtn" data-a="looksheet" aria-label="Look and sound">${ic("palette")}</button><button class="ibtn" data-a="tab" data-k="settings" aria-label="Settings">${ic("gear")}</button></header>
     <main class="wrap">${err}${restore}${body}</main>
     <nav class="tabs" aria-label="Sections">${nav("tabs")}</nav>`;
 }
@@ -1480,9 +1829,9 @@ function taskLine(t, date, locked) {
   if (t.status === "partial") meta.push(`<span class="note">${t.actual} of ${t.min} min done</span>`);
   if (locked && t.status === "todo") meta.push(`<span>Not done</span>`);
   const sc = top ? `--sc:var(--c-${top.sec})` : t.subj && SEC[t.subj] && t.subj !== "mixed" ? `--sc:var(--c-${t.subj})` : "";
-  return `<div class="task ${t.status} ${locked ? "locked" : ""}" style="${sc}" data-id="${esc(t.id)}" data-d="${date}">
+  return `<div class="task ${t.status} ${locked ? "locked" : ""} ${ui.pop === t.id ? "pop" : ""}" style="${sc}" data-id="${esc(t.id)}" data-d="${date}">
     <button class="chk" data-a="toggle" data-id="${esc(t.id)}" data-d="${date}" aria-label="${t.status === "done" ? "Mark not done" : "Mark done"}: ${esc(t.title)}"><span><svg viewBox="0 0 24 24">${IP.tick}</svg></span></button>
-    <button class="body" data-a="open" data-id="${esc(t.id)}" data-d="${date}"><span class="t">${esc(t.title)}</span>${top ? `<span class="topic">${SEC[top.sec].n}: ${esc(top.name)}</span>` : ""}<span class="step">${esc(howTo(t).steps[0] || "")}</span><span class="m">${meta.join("")}</span></button></div>`;
+    <button class="body" data-a="open" data-id="${esc(t.id)}" data-d="${date}"><span class="t">${esc(t.title)}</span>${top ? `<span class="topic">${SEC[top.sec].n}: ${esc(top.name)}</span>` : ""}${(() => { const s0 = howTo(t).steps[0]; return s0 ? `<span class="step">${esc(s0)}</span>` : ""; })()}<span class="m">${meta.join("")}</span></button></div>`;
 }
 function leftovers(d) {
   const w = weekOfDate(d); if (w == null) return [];
@@ -1503,12 +1852,12 @@ function dueRevision(d) {
 function dayView(d) {
   const s = daySummary(d), g = s.g, t0 = today(), w = g.w;
   const title = d === t0 ? "Today" : d === addDays(t0, 1) ? "Tomorrow" : d === addDays(t0, -1) ? "Yesterday" : DNL[dow(d)];
-  const head = `<div class="dh-row"><div class="t"><p class="eyebrow">${title === DNL[dow(d)] ? "" : title + ", "}${w == null ? "" : `week ${w}${g.light ? ", light week" : ""}`}</p><h1>${fmtD(d)}</h1><div class="sub">${w == null ? "" : (TYPE_NAME[g.type] || "") + (/day$/.test(TYPE_NAME[g.type] || "") ? "" : " day")}</div></div>
+  const head = `<div class="dh-row"><div class="t"><p class="eyebrow">${title === DNL[dow(d)] ? "" : title + ", "}${w == null ? "" : `week ${w}${g.light ? ", light week" : ""}`}</p><h1>${fmtD(d)}</h1><div class="sub">${s.mode === "off" ? "Day off" : s.all.length ? `${plural(s.all.length, "task")}, ${s.planned} min` : "Nothing planned yet"}</div></div>
     <button class="ibtn" data-a="shift" data-n="-1" aria-label="Previous day">${ic("prev")}</button><button class="ibtn" data-a="shift" data-n="1" aria-label="Next day">${ic("next")}</button>
-    ${w != null && !weekLocked(w) ? `<button class="ibtn addfab" data-a="addtask" aria-label="Add a task">${ic("plus")}</button>` : ""}</div>`;
+    ${(w == null && !g.gap) || (w != null && !weekLocked(w)) ? `<button class="ibtn addfab" data-a="addtask" aria-label="Add a task">${ic("plus")}</button>` : ""}</div>`;
   if (w == null) {
-    const msg = g.before ? [`Your plan starts ${fmtD(S().start)}`, "Nothing is planned before that."] : g.after ? ["Your plan has ended", "Make the plan longer in Settings to keep going."] : ["This is a break week", "You inserted a gap here, so nothing is planned."];
-    return `<section class="hero dayhero d-none">${head}</section><div class="empty"><b>${msg[0]}</b>${msg[1]}</div><button class="btn main" data-a="gostart">Go to ${g.after ? "the last day" : "the first day"}</button>`;
+    const msg = g.before ? ["Nothing planned for this day", "Tap + to add a task. The plan will start on this week."] : g.after ? ["Nothing planned for this day", "Tap + to add a task. The plan will grow to include it."] : ["This is a break week", "You inserted a gap here, so nothing is planned."];
+    return `<section class="hero dayhero d-none">${head}</section><div class="empty"><b>${msg[0]}</b>${msg[1]}</div>${g.gap ? "" : `<button class="btn main" data-a="addtask">Add a task</button>`}`;
   }
   const pre = t0 < S().start ? `<div class="notice"><span>Your plan starts in ${plural(diffDays(S().start, t0), "day")}. You’re looking ahead.</span></div>` : "";
   const locked = weekLocked(w);
@@ -1539,7 +1888,7 @@ function weekItems(w, selDate) {
     const s = daySummary(d);
     return `<button class="item ${d === t0 ? "today" : ""} ${d === selDate ? "sel" : ""}" data-a="openday" data-d="${d}">
       <span class="lead num">${DN[dow(d)]} ${parse(d).getDate()}</span>
-      <span class="mid"><b>${s.mode === "off" ? "Day off" : TYPE_NAME[s.g.type].replace(" day", "")}</b><span>${s.mode === "normal" ? SIZE_SHORT[s.tier] : MODE_NAME[s.mode] || ""}</span></span>
+      <span class="mid"><b>${s.mode === "off" ? "Day off" : s.all.length ? plural(s.all.length, "task") : "Nothing planned"}</b><span>${s.mode === "normal" ? SIZE_SHORT[s.tier] : MODE_NAME[s.mode] || ""}</span></span>
       <span class="end num"><b>${s.done}<span class="muted">/${s.planned}</span></b>min</span></button>`;
   }).join("");
 }
@@ -1698,9 +2047,10 @@ function viewProgress() {
   const t0 = today();
   const covRows = SECS.map(k => { const l = all.filter(t => t.sec === k), n = l.filter(full).length; return `<div class="item"><span class="mid"><b>${SEC[k].n}</b><span class="num">${n} of ${l.length} topics fully covered</span><div class="bar" style="margin-top:8px"><i style="width:${n / l.length * 100}%"></i></div></span></div>`; }).join("");
   const tm = moreList("topics", all.filter(t => ui.topicSec === "all" || t.sec === ui.topicSec), 12);
+  const sp = subProgress();
   const tlist = tm.items.map(t => {
     const c = state.cov[t.id] || {}, stale = c.L && c.last && diffDays(t0, c.last) > 21;
-    return `<div class="item"><span class="mid"><b>${esc(t.name)}</b><span>${GROUP[t.group]}${t.miss.length ? `, ${t.miss.length} wrong or skipped in your paper` : t.right.length ? `, ${t.right.length} right in your paper` : ""}${stale ? `, <span class="red">not touched for ${diffDays(t0, c.last)} days</span>` : ""}</span></span>
+    return `<div class="item"><span class="mid"><b>${esc(t.name)}</b><span>${GROUP[t.group]}${t.miss.length ? `, ${t.miss.length} wrong or skipped in your paper` : t.right.length ? `, ${t.right.length} right in your paper` : ""}${stale ? `, <span class="red">not touched for ${diffDays(t0, c.last)} days</span>` : ""}</span>${subsHtml(t, sp)}</span>
       <span class="ticks">${[["L", "Learned"], ["P", "Practised"], ["R", "Revised"], ["T", "Timed"]].map(([k, n]) => `<button class="tick" data-a="tick" data-id="${t.id}" data-k="${k}" aria-pressed="${!!c[k]}" aria-label="${n}" title="${n}">${k}</button>`).join("")}</span></div>`;
   }).join("");
   const cov = `<section class="sec"><div class="sec-h"><h2>Syllabus coverage</h2></div><div class="card">${covRows}</div>
@@ -1734,6 +2084,7 @@ function viewSettings() {
   const st = S(), last = state.backup.lastExport, ago = last ? diffDays(today(), last.slice(0, 10)) : null;
   const sync = Store.mode === "firebase" ? `Signed in as ${esc(Auth.name())}. Saved to the cloud, so signing in on your phone or laptop shows the same plan.` : Store.mode === "browser" ? "Saved in this browser only. Export a backup each week, and import it on your other device." : "This browser isn’t keeping your data. Export a backup before you close the page.";
   return `<div class="page"><div class="page-h"><button class="ibtn" data-a="tab" data-k="today" aria-label="Back">${ic("back")}</button><h1>Settings</h1></div><div class="cols eq"><div class="main">
+  ${typeof lookCard === "function" ? lookCard() : ""}
   <section class="sec"><div class="sec-h"><h2>Your plan</h2></div><div class="card">
     <button class="item" data-a="datesheet"><span class="mid"><b>Start date</b><span>${fmtDY(st.start)}${hasKickoff() ? `, then Week 1 on ${fmtD(anchorMonday())}` : ""}</span></span><span class="link">Change</span></button>
     <button class="item" data-a="lengthsheet"><span class="mid"><b>Plan length</b><span>${st.weeks} weeks, ends ${fmtDY(endDate())}</span></span><span class="link">Change</span></button>
@@ -1761,15 +2112,27 @@ function render() {
   document.querySelectorAll("details.more").forEach(d => { const k = d.querySelector("summary").textContent.replace(/[\d,]+/g, "").trim(); d.dataset.key = k; if ((ui.det ||= {})[k]) d.open = true; });
   paintSaved(); paintLayer();
   if (document.scrollingElement) document.scrollingElement.scrollTop = sc;
+  if (window.__afterRender) window.__afterRender();
 }
+document.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && e.target && e.target.id === "t-title") { const b = document.querySelector("#layer [data-a=saveadd], #layer [data-a=saveedit]"); if (b) { e.preventDefault(); b.click(); } } });
 document.addEventListener("toggle", e => { const d = e.target; if (d.matches && d.matches("details.more") && d.dataset.key) (ui.det ||= {})[d.dataset.key] = d.open; }, true);
 function paintLayer() {
-  const L = document.getElementById("layer"); let h = "";
-  if (ui.sheet) h += `<div class="scrim" data-a="scrim"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh"><div class="grab"></div>${ui.sheet.html}</div></div>`;
-  if (ui.toast) h += `<div class="toast" role="status">${esc(ui.toast.msg)}${ui.toast.undo ? `<button data-a="toastundo">Undo</button>` : ""}</div>`;
-  L.innerHTML = h;
+  const L = document.getElementById("layer");
+  let sc = L.querySelector(".scrim");
+  if (!ui.sheet) { if (sc) sc.remove(); L._sh = null; }
+  else if (L._sh !== ui.sheet) {
+    if (sc) sc.remove();
+    L.insertAdjacentHTML("afterbegin", `<div class="scrim" data-a="scrim"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh"><div class="grab"></div><button class="sh-x" data-a="close" aria-label="Close">\u00d7</button>${ui.sheet.html}</div></div>`);
+    L._sh = ui.sheet;
+    if (!ui.sheet.f) { ui.sheet.f = true; const f = L.querySelector(".sheet input:not([type=checkbox]), .sheet h2"); if (f) { if (f.tagName === "H2") f.setAttribute("tabindex", "-1"); f.focus({ preventScroll: true }); } }
+  }
+  let tn = L.querySelector(".toast");
+  if (!ui.toast || ui.sheet) { if (tn) tn.remove(); }
+  else {
+    const h = `<div class="toast" role="status">${esc(ui.toast.msg)}${ui.toast.undo ? `<button data-a="toastundo">Undo</button>` : ""}</div>`;
+    if (tn) tn.outerHTML = h; else L.insertAdjacentHTML("beforeend", h);
+  }
   document.body.classList.toggle("sheet-open", !!ui.sheet);
-  if (ui.sheet && !ui.sheet.f) { ui.sheet.f = true; const f = L.querySelector(".sheet input:not([type=checkbox]), .sheet h2"); if (f) { if (f.tagName === "H2") f.setAttribute("tabindex", "-1"); f.focus({ preventScroll: true }); } }
 }
 function sheet(html) { ui.sheet = { html }; paintLayer(); }
 function closeSheet() { ui.sheet = null; paintLayer(); }
@@ -1785,9 +2148,9 @@ function taskSheet(id, d) {
   const fact = (k, v) => v ? `<div><dt>${k}</dt><dd>${v}</dd></div>` : "";
   const canQuiz = top && ["practice", "pyq", "speed", "revision"].includes(t.kind) && t.tag !== "commute";
   sheet(`<h2 id="sh">${esc(t.title)}</h2><p class="lead">${fmtD(d)}${t.time ? `, ${t.time}` : ""}, ${t.min} min${t.tier === "floor" ? ". A must-do task" : ""}</p>
-    <dl class="facts">${fact("Subject", top ? `${SEC[top.sec].n}: ${esc(top.name)}` : t.subj && SEC[t.subj] ? SEC[t.subj].n : "")}${fact("Where", t.tag === "fixed" ? "At home" : PLACE[t.tag] + (PLACE_NOTE[t.tag] ? `, ${PLACE_NOTE[t.tag].toLowerCase()}` : ""))}${fact("Type", KINDS[t.kind])}${fact("Questions", h.n ? String(h.n) : "")}${fact("Group", top ? GROUP[top.group] : "")}${fact("Source", esc(t.res))}${fact("Search for", h.search ? `“${esc(h.search)}”` : "")}${fact("Moved", t.movedFrom ? `From ${fmtD(t.movedFrom)}` : "")}${fact("Added by", t.src === "user" ? "You" : "")}</dl>
-    <div class="sec-h"><h2 style="font-size:16px">What to do</h2></div>
-    <ol class="steps">${h.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol>
+    <dl class="facts">${fact("Subject", top ? `${SEC[top.sec].n}: ${esc(top.name)}` : t.subj && SEC[t.subj] ? SEC[t.subj].n : "")}${fact("Sub-topic", t.sub ? esc(t.sub) : "")}${fact("Where", t.tag === "fixed" ? "At home" : PLACE[t.tag] + (PLACE_NOTE[t.tag] ? `, ${PLACE_NOTE[t.tag].toLowerCase()}` : ""))}${fact("Type", KINDS[t.kind])}${fact("Questions", h.n ? String(h.n) : "")}${fact("Group", top ? GROUP[top.group] : "")}${fact("Source", esc(t.res))}${fact("Search for", h.search ? `“${esc(h.search)}”` : "")}${fact("Moved", t.movedFrom ? `From ${fmtD(t.movedFrom)}` : "")}${fact("Added by", t.src === "user" ? "You" : "")}</dl>
+    ${t.src === "user" ? (t.note ? `<div class="sec-h"><h2 style="font-size:16px">Notes</h2></div><p class="soft" style="margin:0 0 14px;white-space:pre-wrap">${esc(t.note)}</p>` : "") : `<div class="sec-h"><h2 style="font-size:16px">What to do</h2></div>
+    <ol class="steps">${h.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol>`}
     ${h.done ? `<p class="donewhen"><b>Done when</b> ${esc(h.done)}</p>` : ""}
     ${mist.length ? `<div class="sec-h" style="margin-top:6px"><h2 style="font-size:16px" class="red">Your past mistakes on this topic</h2></div><div class="card" style="margin-bottom:14px">${mist.slice(0, 5).map(m => `<div class="item"><span class="lead red num">${m.q ? "Q" + m.q : m.quiz ? "Quiz" : "Test"}</span><span class="mid"><b>${esc(m.sub)}</b><span>${m.res === "S" ? "Skipped" : "Wrong"}${m.quiz ? " last time. Retry it in Tests" : `, ${m.retries.length} of 3 retries`}</span></span></div>`).join("")}${mist.length > 5 ? `<button class="morebtn" data-a="gomistakes">See all ${mist.length} in Review${ic("next")}</button>` : ""}</div>` : ""}
     ${locked ? `<p class="soft small">This week is finished, so this task can’t change.</p>` : `
@@ -1865,7 +2228,7 @@ function addMistakeSheet() {
     <div class="acts"><button class="btn line" data-a="close">Cancel</button><button class="btn main" data-a="savenewmist">Add mistake</button></div>`);
 }
 function addTaskSheet(d, t) {
-  const w = weekOfDate(d), days = weekDates(w).filter(x => x >= today() || x === d), edit = !!t; t = t || { tier: "target", tag: "home", min: 20, kind: "practice" };
+  const edit = !!t, from = d < today() ? d : today(), days = Array.from({ length: 29 }, (_, i) => addDays(from, i)); if (!days.includes(d)) days.push(d); days.sort(); t = t || { tier: "target", tag: "home", min: 20, kind: "practice" };
   sheet(`<h2 id="sh">${edit ? "Edit task" : "Add a task"}</h2><p class="lead">${edit ? "The planner won’t move it after you edit it." : "Type it in one line. For example: 20 PYQs Quant, 30 min, Sunday"}</p>
     ${edit ? `<label class="field">Task<input id="t-title" value="${esc(t.title)}"></label>` : `<label class="field">Task<input id="t-title" data-c="quick" placeholder="20 PYQs Quant, 30 min, Sunday"></label>`}
     <div class="two"><label class="field">Day<select id="t-day">${days.map(x => `<option value="${x}" ${x === d ? "selected" : ""}>${fmtD(x)}</option>`).join("")}</select></label>
@@ -1874,8 +2237,9 @@ function addTaskSheet(d, t) {
       <div class="two"><label class="field">Where<select id="t-tag">${["commute", "break", "home"].map(k => `<option value="${k}" ${(t.tag === k || (t.tag === "fixed" && k === "home")) ? "selected" : ""}>${PLACE[k]}</option>`).join("")}</select></label>
       <label class="field">Show it on<select id="t-tier">${["floor", "target", "stretch"].map(k => `<option value="${k}" ${t.tier === k ? "selected" : ""}>${{ floor: "Every day, must-do", target: "Normal and free days", stretch: "Free days only" }[k]}</option>`).join("")}</select></label></div>
       ${edit ? "" : `<div class="two"><label class="field">Type<select id="t-kind">${Object.entries(KINDS).filter(([k]) => k !== "setup").map(([k, n]) => `<option value="${k}" ${t.kind === k ? "selected" : ""}>${n}</option>`).join("")}</select></label>
-      <label class="field">Repeat<select id="t-rep"><option value="once">No</option><option value="daily">Every day this week</option><option value="weekly">Every week</option></select></label></div>
+      <label class="field">Repeat<select id="t-rep"><option value="once">No</option><option value="daily">Every day this week</option><option value="daily28">Every day for 4 weeks</option><option value="weekly">Every week</option></select></label></div>
       <label class="field">Syllabus topic<select id="t-topic"><option value="">None</option>${topicOptions(t.topicId)}</select></label>`}
+      <label class="field">Notes (optional)<textarea id="t-note" rows="3" placeholder="Links, chapter numbers, what “done” means">${esc(t.note || "")}</textarea></label>
     </details><p class="small red" id="t-over" hidden></p>
     <div class="acts"><button class="btn line" data-a="close">Cancel</button><button class="btn main" data-a="${edit ? "saveedit" : "saveadd"}" data-id="${esc(t.id || "")}" data-d="${d}">${edit ? "Save changes" : "Add task"}</button></div>`);
 }
@@ -2591,21 +2955,24 @@ const A = {
   tick: el => { const c = (state.cov[el.dataset.id] ||= {}), k = el.dataset.k; if (c[k]) delete c[k]; else { c[k] = today(); c.last = today(); } commit(); },
   review: el => { ((state.weeks[+el.dataset.w] ||= {}).rev ||= {})[el.dataset.k] = el.dataset.o; commit(); },
   pkdone: el => { state.pk[el.dataset.id] = "done"; toast("Caught up"); commit(); }, pkdrop: el => { state.pk[el.dataset.id] = "drop"; commit(); },
-  addtask: () => { if (weekInfo(ui.sel).w != null && !weekLocked(weekOfDate(ui.sel))) addTaskSheet(ui.sel); },
+  addtask: () => { if (!ensureWindowFor(ui.sel)) { toast(weekInfo(ui.sel).gap ? "This is a break week. Remove the break in Settings to add tasks." : "This day is before your plan start. Change the start date in Settings."); return; } if (!weekLocked(weekOfDate(ui.sel))) { commit(); addTaskSheet(ui.sel); } },
   saveadd: el => {
     const title = (V("t-title") || "").trim(); if (!title) { document.getElementById("t-title").focus(); return; }
     const q = parseQuick(title), date = V("t-day"), min = clamp(+V("t-min") || 20, 5, 600), tier = V("t-tier"), topicId = V("t-topic") || null;
-    const c = { id: "c-" + uid(), date, title: q.title || title, min, tag: V("t-tag"), tier, kind: V("t-kind"), repeat: V("t-rep"), topicId, subj: topicId ? TOPICS[topicId].sec : q.subj, q: {}, res: "", time: null };
+    let repeat = V("t-rep"), until = null; if (repeat === "daily28") { repeat = "daily"; until = addDays(date, 27); }
+    if (!ensureWindowFor(date) || (until && !ensureWindowFor(until))) { toast("That day is outside your plan. Change the plan dates in Settings."); return; }
+    const c = { id: "c-" + uid(), date, title: q.title || title, min, tag: V("t-tag"), tier, kind: V("t-kind"), repeat, topicId, subj: topicId ? TOPICS[topicId].sec : q.subj, q: {}, res: "", time: null, note: (V("t-note") || "").trim() };
+    if (until) c.until = until;
     const s = daySummary(date), base = sum(genDay(date).tasks.filter(t => inTier(t, s.tier)), t => t.min), now = sum(s.active, t => t.min);
     const over = now + (inTier(c, s.tier) ? min : 0) - base;
-    if (over > 0 && !el.dataset.ok) { const o = document.getElementById("t-over"); o.hidden = false; o.textContent = `${fmtD(date)} will be ${over} min longer than planned. Tap Add task again to keep it, or pick another day.`; el.dataset.ok = "1"; return; }
+    if (base > 0 && over > 0 && !el.dataset.ok) { const o = document.getElementById("t-over"); o.hidden = false; o.textContent = `${fmtD(date)} will be ${over} min longer than planned. Tap Add task again to keep it, or pick another day.`; el.dataset.ok = "1"; return; }
     state.custom.push(c); setSt(c.id, { pin: true }); logChange(`Added “${c.title}”`, `${fmtD(date)}, ${min} min`);
     closeSheet(); toast("Task added"); commit();
   },
   saveedit: el => {
-    const id = el.dataset.id, d = el.dataset.d, edit = { title: (V("t-title") || "").trim() || undefined, min: clamp(+V("t-min") || 10, 5, 600), tag: V("t-tag"), tier: V("t-tier") };
+    const id = el.dataset.id, d = el.dataset.d, edit = { title: (V("t-title") || "").trim() || undefined, min: clamp(+V("t-min") || 10, 5, 600), tag: V("t-tag"), tier: V("t-tier"), note: (V("t-note") || "").trim() };
     const c = state.custom.find(x => x.id === id); if (c) Object.assign(c, edit); else setSt(id, { edit: { ...(state.st[id]?.edit || {}), ...edit }, pin: true });
-    if (V("t-day") !== d) moveTask(id, d, V("t-day"), false);
+    if (V("t-day") !== d) { if (!ensureWindowFor(V("t-day"))) { toast("That day is outside your plan."); return; } moveTask(id, d, V("t-day"), false); }
     logChange(`Edited “${edit.title}”`, ""); closeSheet(); toast("Changes saved"); commit();
   },
   addmock: () => mockSheet(),
@@ -2679,6 +3046,12 @@ document.addEventListener("touchend", e => { if (tx == null) return; const dx = 
     app.innerHTML = `<div style="max-width:520px;margin:0 auto;padding:40px 16px;font-family:system-ui,sans-serif"><h2>Couldn’t load your plan</h2><p style="margin:10px 0 16px">${String(e.message || e).replace(/</g, "&lt;")}</p><p style="margin-bottom:16px;opacity:.8">Check your internet and that your Firebase database rules allow reading and writing. Nothing was changed.</p><button onclick="location.reload()" style="padding:10px 16px;font:inherit">Try again</button></div>`;
     return;
   }
+  const fail = e => {
+    console.error(e); clearTimeout(wd);
+    app.innerHTML = `<div style="max-width:520px;margin:0 auto;padding:40px 16px;font-family:system-ui,sans-serif"><h2>Couldn’t open your plan</h2><p style="margin:10px 0 6px">Your data in the cloud was not changed.</p><p style="margin:0 0 16px;opacity:.75;font-size:14px;word-break:break-word">${String((e && e.message) || e).replace(/</g, "&lt;")}</p><button onclick="location.reload()" style="padding:10px 16px;font:inherit">Try again</button></div>`;
+  };
+  const wd = setTimeout(() => { if (app.textContent.indexOf("Loading your plan") >= 0) fail(new Error("This is taking too long. Check your internet connection.")); }, 15000);
+  try {
   try { snapshots = snapRaw ? JSON.parse(snapRaw) : []; } catch (e) { snapshots = []; }
   if (typeof raw !== "string") {   // first time on Firebase: bring over anything this browser saved earlier
     raw = null;
@@ -2687,8 +3060,15 @@ document.addEventListener("touchend", e => { if (tx == null) return; const dx = 
   Store.lastRemote = typeof raw === "string" ? raw : null;
   if (raw) { try { state = { ...defaultState(), ...JSON.parse(raw) }; } catch (e) { state = defaultState(); } }
   else { state = defaultState(); if (snapshots.length) ui.offerRestore = snapshots[0]; }
+  { const d0 = defaultState().settings, st = state.settings = { ...d0, ...(state.settings || {}) };
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(st.start))) st.start = d0.start;
+    st.weeks = clamp(+st.weeks || d0.weeks, 1, 156); st.gaps = (Array.isArray(st.gaps) ? st.gaps : []).filter(g => g && /^\d{4}-\d{2}-\d{2}$/.test(String(g.monday)));
+    for (const k of ["st", "days", "weeks", "custom", "mocks", "log"]) if (state[k] == null) state[k] = defaultState()[k]; }
+  let moved = false; if (today() < S().start) moved = ensureWindowFor(today());
   ui.sel = defaultSel(); render();
-  if (!raw || Store.lastRemote == null) persist(); else { save.status = "saved"; paintSaved(); }
+  if (!raw || Store.lastRemote == null || moved) persist(); else { save.status = "saved"; paintSaved(); }
+  } catch (e) { fail(e); return; }
+  clearTimeout(wd);
   startLiveSync();
 })();
 
@@ -2844,4 +3224,179 @@ document.addEventListener("input", e => {
   for (const k of SECS) { const c = V(`k-${k}-c`), w = V(`k-${k}-w`); if (c !== "" || w !== "") sec[k] = { c: +c || 0, w: +w || 0 }; }
   const s = mockScore({ type, sec }); el.innerHTML = Object.keys(sec).length ? `Score <b class="num">${s.score}</b> of ${s.max}, ${s.c} right, ${s.w} wrong, ${s.sk} skipped` : "Fill in the sections you took";
 });
-</script></body></html>
+</script><script>
+/* ===== look, sound and motion (theme picker, effects, loader) ===== */
+(function () {
+  const UIP = { theme: "auto", sound: true, haptics: true, motion: "full" };
+  try { Object.assign(UIP, JSON.parse(localStorage.getItem("cgl-ui") || "{}")); } catch (e) {}
+  const saveUIP = () => { try { localStorage.setItem("cgl-ui", JSON.stringify(UIP)); } catch (e) {} };
+  const mq = q => window.matchMedia && matchMedia(q).matches;
+  const reduced = () => mq("(prefers-reduced-motion: reduce)");
+  const THEMES = [["auto", "Auto"], ["light", "Light"], ["night", "Night"], ["black", "Black"], ["midnight", "Midnight"], ["paper", "Paper"], ["lavender", "Lavender"]];
+  const SW = { light: ["#F1F5F9", "#FFFFFF", "#0D9488"], night: ["#020617", "#0F172A", "#2DD4BF"], black: ["#000000", "#161618", "#34D399"], midnight: ["#0A0F1F", "#1A2547", "#7DD3FC"], paper: ["#F4ECD8", "#FBF6E9", "#B4532A"], lavender: ["#F5EFFF", "#FFFFFF", "#7C3AED"] };
+  const eff = () => UIP.theme === "auto" ? (mq("(prefers-color-scheme: dark)") ? "night" : "light") : UIP.theme;
+  function applyTheme() {
+    const t = eff(), h = document.documentElement;
+    h.dataset.theme = t; h.dataset.pref = UIP.theme; h.dataset.motion = (UIP.motion === "off" || reduced()) ? "off" : "full";
+    const m = document.getElementById("tc"); if (m) m.content = SW[t][0];
+  }
+  applyTheme();
+  try { const dm = window.matchMedia && matchMedia("(prefers-color-scheme: dark)"); const fn = () => { if (UIP.theme === "auto") applyTheme(); }; if (dm) { if (dm.addEventListener) dm.addEventListener("change", fn); else if (dm.addListener) dm.addListener(fn); } } catch (e) {}
+
+  /* ---- sound: small synthesised sounds, no files to download ---- */
+  const SFX = {
+    ctx: null, master: null, skipClose: false,
+    ready() {
+      if (!UIP.sound) return false;
+      try {
+        if (!this.ctx) {
+          const C = window.AudioContext || window.webkitAudioContext; if (!C) return false;
+          const c = this.ctx = new C(); this.master = c.createGain(); this.master.gain.value = .6;
+          const d = c.createDelay(); d.delayTime.value = .16; const fb = c.createGain(); fb.gain.value = .3; const wet = c.createGain(); wet.gain.value = .2;
+          this.master.connect(c.destination); this.master.connect(d); d.connect(fb); fb.connect(d); d.connect(wet); wet.connect(c.destination);
+        }
+        if (this.ctx.state === "suspended") this.ctx.resume();
+        return true;
+      } catch (e) { return false; }
+    },
+    tone(f, t, dur, type, g, to) {
+      const c = this.ctx, o = c.createOscillator(), v = c.createGain(), n = c.currentTime + t;
+      o.type = type || "sine"; o.frequency.setValueAtTime(f, n); if (to) o.frequency.exponentialRampToValueAtTime(to, n + dur);
+      v.gain.setValueAtTime(.0001, n); v.gain.exponentialRampToValueAtTime(g, n + .012); v.gain.exponentialRampToValueAtTime(.0001, n + dur);
+      o.connect(v); v.connect(this.master); o.start(n); o.stop(n + dur + .05);
+    },
+    whoosh(dur, f0, f1, g) {
+      const c = this.ctx, n = c.currentTime, len = Math.floor(c.sampleRate * dur), b = c.createBuffer(1, len, c.sampleRate), d = b.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      const s = c.createBufferSource(); s.buffer = b; const bp = c.createBiquadFilter(); bp.type = "bandpass"; bp.Q.value = 1.1;
+      bp.frequency.setValueAtTime(f0, n); bp.frequency.exponentialRampToValueAtTime(f1, n + dur);
+      const v = c.createGain(); v.gain.setValueAtTime(.0001, n); v.gain.exponentialRampToValueAtTime(g, n + dur * .35); v.gain.exponentialRampToValueAtTime(.0001, n + dur);
+      s.connect(bp); bp.connect(v); v.connect(this.master); s.start(n);
+    },
+    play(name) {
+      if (!this.ready()) return; const S = this;
+      const k = {
+        tap() { S.tone(1500, 0, .05, "triangle", .045); },
+        tab() { S.tone(700, 0, .08, "sine", .07, 980); },
+        open() { S.whoosh(.3, 300, 2600, .05); },
+        close() { S.whoosh(.24, 2400, 300, .035); },
+        done() { S.tone(659, 0, .2, "sine", .13); S.tone(988, .07, .32, "sine", .11); S.tone(1976, .1, .22, "triangle", .03); },
+        undone() { S.tone(440, 0, .15, "sine", .09, 330); },
+        add() { S.tone(523, 0, .12, "triangle", .08); S.tone(784, .06, .22, "sine", .1); },
+        all() { [523, 659, 784, 1047, 1319].forEach((f, i) => S.tone(f, i * .07, .45, "sine", .1)); S.tone(2093, .4, .55, "triangle", .04); },
+        skip() { S.tone(520, 0, .13, "sine", .06, 400); },
+        theme() { S.tone(392, 0, .1, "sine", .07); S.tone(587, .07, .2, "sine", .07); }
+      }[name];
+      if (k) k();
+    }
+  };
+  const buzz = p => { if (UIP.haptics && navigator.vibrate) try { navigator.vibrate(p); } catch (e) {} };
+  window.SFX = SFX;
+
+  /* ---- confetti ---- */
+  function burst(x, y, n, power, rain) {
+    if (document.documentElement.dataset.motion === "off") return;
+    const cv = document.createElement("canvas"); cv.className = "fx-canvas";
+    const dpr = Math.min(2, window.devicePixelRatio || 1); cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; document.body.appendChild(cv);
+    const g = cv.getContext("2d"); g.scale(dpr, dpr);
+    const cs = getComputedStyle(document.documentElement), cols = ["--c-quant", "--c-eng", "--c-ga", "--c-rsn", "--accent"].map(v => cs.getPropertyValue(v).trim() || "#2DD4BF");
+    const P = Array.from({ length: n }, () => {
+      const a = rain ? Math.PI / 2 + (Math.random() - .5) * .8 : Math.random() * Math.PI * 2, sp = (rain ? 2 + Math.random() * 4 : 3 + Math.random() * 7 * power);
+      return { x: rain ? Math.random() * innerWidth : x, y: rain ? -20 - Math.random() * 120 : y, vx: Math.cos(a) * sp * (rain ? .5 : 1), vy: Math.sin(a) * sp - (rain ? 0 : 3), r: 3 + Math.random() * 4, c: cols[(Math.random() * cols.length) | 0], rot: Math.random() * 6, vr: (Math.random() - .5) * .4 };
+    });
+    const t0 = performance.now(), life = rain ? 2300 : 1300;
+    (function f(t) {
+      const k = (t - t0) / life; g.clearRect(0, 0, innerWidth, innerHeight);
+      if (k >= 1) { cv.remove(); return; }
+      P.forEach(p => { p.vy += .22; p.vx *= .992; p.x += p.vx; p.y += p.vy; p.rot += p.vr; g.save(); g.globalAlpha = 1 - k * k; g.translate(p.x, p.y); g.rotate(p.rot); g.fillStyle = p.c; g.fillRect(-p.r, -p.r / 2, p.r * 2, p.r); g.restore(); });
+      requestAnimationFrame(f);
+    })(t0);
+  }
+
+  /* ---- actions ---- */
+  const press = el => { if (!el || !el.parentElement) return; el.parentElement.querySelectorAll("[aria-pressed]").forEach(b => b.setAttribute("aria-pressed", b === el ? "true" : "false")); };
+  const celebrated = {};
+  function lookHTML() {
+    const grid = THEMES.map(([k, n]) => {
+      const pv = k === "auto" ? `<span class="pv half"><i style="background:${SW.light[0]}"></i><i style="background:${SW.night[0]}"></i></span>` : `<span class="pv" style="background:${SW[k][0]}"><i style="background:${SW[k][1]}"></i><b style="background:${SW[k][2]}"></b></span>`;
+      return `<button class="thm" data-a="settheme" data-t="${k}" aria-pressed="${UIP.theme === k}">${pv}<span>${n}</span></button>`;
+    }).join("");
+    const seg = (a, opts, cur) => `<div class="seg">${opts.map(([v, n]) => `<button data-a="${a}" data-v="${v}" aria-pressed="${String(cur) === String(v)}">${n}</button>`).join("")}</div>`;
+    return `<h2 id="sh">Look and sound</h2><p class="lead">Saved on this device only.</p>
+      <div class="thm-grid">${grid}</div>
+      <div class="lk-row"><span>Sound effects<small>Soft clicks, chimes and whooshes</small></span>${seg("setsound", [[1, "On"], [0, "Off"]], UIP.sound ? 1 : 0)}</div>
+      ${navigator.vibrate ? `<div class="lk-row"><span>Vibration<small>A tiny buzz when you tick a task</small></span>${seg("sethaptics", [[1, "On"], [0, "Off"]], UIP.haptics ? 1 : 0)}</div>` : ""}
+      <div class="lk-row"><span>Motion<small>Animations and confetti</small></span>${seg("setmotion", [["full", "Full"], ["off", "Calm"]], UIP.motion === "off" ? "off" : "full")}</div>
+      <div class="acts"><button class="btn main" data-a="close" style="grid-column:1/-1">Done</button></div>`;
+  }
+  window.lookCard = function () {
+    const nm = (THEMES.find(t => t[0] === UIP.theme) || THEMES[0])[1];
+    return `<section class="sec"><div class="sec-h"><h2>Look and sound</h2></div><div class="card"><button class="item" data-a="looksheet"><span class="mid"><b>Theme, sound and motion</b><span>${nm} theme, sound ${UIP.sound ? "on" : "off"}, motion ${UIP.motion === "off" ? "calm" : "full"}</span></span><span class="link">Change</span></button></div></section>`;
+  };
+  Object.assign(A, {
+    looksheet: () => sheet(lookHTML()),
+    settheme: el => { UIP.theme = el.dataset.t; saveUIP(); applyTheme(); press(el); SFX.play("theme"); buzz(8); },
+    setsound: el => { UIP.sound = el.dataset.v === "1"; saveUIP(); press(el); if (UIP.sound) SFX.play("done"); },
+    sethaptics: el => { UIP.haptics = el.dataset.v === "1"; saveUIP(); press(el); buzz(20); },
+    setmotion: el => { UIP.motion = el.dataset.v; saveUIP(); applyTheme(); press(el); }
+  });
+
+  /* ---- hook into the app ---- */
+  try {
+  const wrap = (name, fn) => { const o = A[name]; if (o) A[name] = (el, e) => fn(o, el, e); };
+  wrap("toggle", (o, el, e) => {
+    const id = el.dataset.id, d = el.dataset.d, r = el.getBoundingClientRect(), before = (taskById(id, d) || {}).status;
+    ui.pop = id; setTimeout(() => { ui.pop = null; }, 900);
+    o(el, e);
+    const after = (taskById(id, d) || {}).status;
+    if (after === "done" && before !== "done") {
+      SFX.play("done"); buzz(14); burst(r.left + r.width / 2, r.top + r.height / 2, 26, 1);
+      const s = daySummary(d);
+      if (s.n && s.nDone === s.n && !celebrated[d]) { celebrated[d] = 1; setTimeout(() => { SFX.play("all"); buzz([30, 40, 60]); burst(innerWidth / 2, 0, 90, 1, true); toast("Day complete. Nice work."); }, 350); }
+    } else if (before === "done" && after !== "done") { SFX.play("undone"); }
+  });
+  ["tab", "openday", "shift", "wk"].forEach(n => wrap(n, (o, el, e) => { ui.enter = true; if (n === "tab") SFX.play("tab"); o(el, e); }));
+  wrap("skip", (o, el, e) => { SFX.play("skip"); o(el, e); });
+  wrap("saveadd", (o, el, e) => { const n0 = state.custom.length; SFX.skipClose = true; o(el, e); SFX.skipClose = false; if (state.custom.length > n0) { SFX.play("add"); buzz(10); } });
+  wrap("saveedit", (o, el, e) => { SFX.skipClose = true; o(el, e); SFX.skipClose = false; SFX.play("add"); });
+  const _sheet = window.sheet; window.sheet = function (h) { const had = !!ui.sheet; _sheet(h); if (!had) SFX.play("open"); };
+  const _close = window.closeSheet; window.closeSheet = function () { const had = !!ui.sheet; _close(); if (had && !SFX.skipClose) SFX.play("close"); };
+  document.addEventListener("click", e => {
+    const el = e.target.closest("[data-a],summary"); if (!el || el.disabled) return;
+    const a = el.dataset.a || "";
+    if (["toggle", "tab", "settheme", "setsound", "sethaptics", "setmotion", "scrim", "close", "saveadd", "saveedit", "skip", "openday", "shift", "wk"].includes(a)) return;
+    SFX.play("tap");
+  }, true);
+
+  } catch (e) { console.warn("look hooks", e); }
+
+  /* ---- swipe a sheet down to close it ---- */
+  (function () {
+    let y0 = null, sh = null, dy = 0;
+    document.addEventListener("touchstart", e => { const s = e.target.closest(".sheet"); if (!s || s.scrollTop > 2) { y0 = null; return; } sh = s; y0 = e.touches[0].clientY; dy = 0; sh.style.transition = "none"; }, { passive: true });
+    document.addEventListener("touchmove", e => { if (y0 == null) return; dy = Math.max(0, e.touches[0].clientY - y0); if (dy > 6) sh.style.transform = `translateY(${dy}px)`; }, { passive: true });
+    document.addEventListener("touchend", () => { if (y0 == null) return; const s = sh; y0 = null; if (dy > 110) { closeSheet(); } else { s.style.transition = "transform .25s"; s.style.transform = ""; } }, { passive: true });
+  })();
+
+  /* ---- page entrance (only when you change page, never on a tick) ---- */
+  window.__afterRender = function () {
+    if (!ui.enter) return; ui.enter = false;
+    if (document.documentElement.dataset.motion === "off") return;
+    const app = document.getElementById("app");
+    let els = [...app.querySelectorAll(".hero,.page-h,.sec,.grp,.notice,.empty,.today-side .card")];
+    els = els.filter(a => !els.some(b => b !== a && b.contains(a))).slice(0, 12);
+    els.forEach((el, i) => { el.style.setProperty("--i", i); el.classList.add("fx-in"); el.addEventListener("animationend", () => el.classList.remove("fx-in"), { once: true }); });
+    document.body.classList.add("enter"); setTimeout(() => document.body.classList.remove("enter"), 900);
+  };
+
+  /* ---- glow that follows the pointer (laptops) ---- */
+  try { if (mq("(hover:hover) and (pointer:fine)")) {
+    const g = document.createElement("div"); g.id = "fx-glow"; document.body.appendChild(g); let x = 0, y = 0, raf = 0;
+    addEventListener("pointermove", e => { x = e.clientX; y = e.clientY; g.style.opacity = 1; if (!raf) raf = requestAnimationFrame(() => { raf = 0; g.style.transform = `translate3d(${x}px,${y}px,0)`; }); }, { passive: true });
+    document.addEventListener("mouseleave", () => { g.style.opacity = 0; });
+  } } catch (e) {}
+
+})();
+</script>
+
+</body></html>
