@@ -627,6 +627,10 @@ html[data-motion="off"] #fx-glow{display:none}
 html[data-motion="off"] #boot{display:none}
 
 </style>
+<style>.field .tbtn{min-height:48px;border:0;border-radius:var(--r-s);background:var(--surface);padding:0 14px;font-size:16px;font-weight:500;color:var(--text);width:100%;text-align:left;box-shadow:inset 0 0 0 1.5px var(--line);display:flex;justify-content:space-between;align-items:center}.field .tbtn::after{content:"▾";color:var(--text-3)}
+.tp{position:fixed;inset:0;z-index:80;background:rgba(2,6,23,.5);display:flex;align-items:flex-end;justify-content:center}.tp>div{background:var(--bg);color:var(--text);width:100%;max-width:560px;height:80dvh;border-radius:28px 28px 0 0;display:flex;flex-direction:column;padding:16px 18px calc(14px + env(safe-area-inset-bottom))}
+.tp .tpt{font-size:18px;margin-bottom:10px}.tp .chips{display:flex;gap:6px;overflow-x:auto;margin:10px 0;flex:none}.tp .chip{flex:none;min-height:36px;padding:0 14px;border-radius:99px;border:0;background:var(--surface);color:var(--text);box-shadow:inset 0 0 0 1.5px var(--line);font-weight:700}.tp .chip[aria-pressed=true]{background:var(--accent);color:var(--on-accent)}
+.tp .tl{flex:1;overflow:auto;margin-bottom:10px}.tp .tph{font-size:13px;font-weight:800;color:var(--text-3);padding:10px 4px 4px}.tp .tr{display:flex;justify-content:space-between;gap:8px;width:100%;min-height:48px;align-items:center;text-align:left;padding:8px 12px;border:0;border-radius:14px;background:none;font-size:15px;color:var(--text)}.tp .tr[aria-pressed=true]{background:var(--accent-weak);font-weight:800}</style>
 </head>
 <body>
 <div id="boot" aria-hidden="true"><div class="b-bar"><i id="b-bar"></i></div><div class="b-top"><span>CGL plan</span><span>Study planner</span></div><div class="b-txt">Your plan is <em>loading</em>.<br>One moment, please.</div><div class="b-count"><span id="b-n">000</span><i>%</i></div></div>
@@ -1442,8 +1446,42 @@ function buildMovedIdx() {
   for (const [id, s] of Object.entries(state.st)) if (s.to && !s.rm) (movedIdx[s.to] ||= []).push({ id, from: s.from });
 }
 function findPlanTask(id, date) { const g = genDay(date); return g.tasks.find(t => t.id === id) || null; }
+const DEF_SLOTS={wk:[["07:00","09:00"],["21:00","23:30"]],sat:[["10:00","13:00"],["18:00","20:00"],["22:00","24:00"]],sun:[["09:00","12:00"],["16:00","18:00"],["21:00","23:00"]]};
+const tm=s=>{const [h,m]=s.split(":").map(Number);return h*60+m};
+const hm=n=>pad(Math.floor(n/60)%24)+":"+pad(n%60);
+const slotKey=d=>{const w=dow(d);return w===6?"sat":w===0?"sun":"wk"};
+function slotsOf(d){return [...(S().slots||DEF_SLOTS)[slotKey(d)],...((state.days[d]||{}).xslots||[])].map(x=>{const s=tm(x[0]);let e=tm(x[1]);if(e===0)e=1440;return{s,e}}).filter(x=>x.e>x.s).sort((a,b)=>a.s-b.s)}
+function prefSlot(d,p){return slotsOf(d).find(s=>p==="m"?s.s<720:p==="a"?s.s>=720&&s.s<1200:s.s>=1200)}
+function usedIn(d,s){return sum(dayTasks(d).filter(t=>t.slot===s&&t.status!=="skipped"),t=>t.min)}
+function nextRoom(d,min,skip){for(let i=0;i<=14;i++){const x=addDays(d,i);for(const s of slotsOf(x)){if(i===0&&s.s===skip)continue;if(s.e-s.s-usedIn(x,s.s)>=min)return `Room on ${fmtD(x)}, ${hm(s.s)}–${hm(s.e)}.`}}return "No slot has room in the next 2 weeks."}
+function refreshSlots(auto){
+  const sel=document.getElementById("t-slot");if(!sel)return;
+  const d=V("t-day"),min=+V("t-min")||0,rep=V("t-rep")||"once",pw=document.getElementById("t-pw");
+  pw.style.display=rep==="once"?"none":"";sel.parentNode.style.display=rep==="once"?"":"none";
+  const ss=slotsOf(d),fr=s=>s.e-s.s-usedIn(d,s.s);
+  let cur=auto?null:+sel.value;
+  if(cur==null||!ss.some(s=>s.s===cur)){const f=ss.find(s=>fr(s)>=min)||ss.slice().sort((a,b)=>fr(b)-fr(a))[0];cur=f?f.s:null}
+  sel.innerHTML=ss.length?ss.map(s=>`<option value="${s.s}" ${s.s===cur?"selected":""}>${hm(s.s)}–${hm(s.e)} · ${Math.max(0,fr(s))} min left</option>`).join(""):`<option value="">No slots this day</option>`;
+  const o=document.getElementById("t-over"),b=document.querySelector("#layer [data-a=saveadd]");if(b)delete b.dataset.ok;
+  const sl=ss.find(s=>s.s===cur);
+  if(rep==="once"&&sl&&fr(sl)<min){o.hidden=false;o.textContent=`Only ${Math.max(0,fr(sl))} min free in this slot. ${nextRoom(d,min,cur)}`}else o.hidden=true;
+}
+function topicField(id,sel,none){const nm=sel&&TOPICS[sel]?TOPICS[sel].name:"None";return `<div class="field"><span>${id==="t-topic"?"Syllabus topic":"Topic"}</span><input type="hidden" id="${id}" value="${esc(sel||"")}"><button type="button" class="tbtn" id="${id}-b" data-a="pickt" data-f="${id}" data-n="${none?1:0}"><span>${esc(nm)}</span></button></div>`}
+function openTopicPicker(id,none){
+  const inp=document.getElementById(id),btn=document.getElementById(id+"-b");let sec="all",q="";
+  const el=document.createElement("div");el.className="tp";
+  const row=(v,n)=>`<button type="button" class="tr" data-v="${v}" aria-pressed="${inp.value===v}"><span>${esc(n)}</span>${inp.value===v?"<span>✓</span>":""}</button>`;
+  el.innerHTML=`<div role="dialog" aria-label="Choose a topic"><b class="tpt">Choose a topic</b><input class="inp" id="tp-q" placeholder="Search topics" autocomplete="off"><div class="chips">${["all",...SECS].map(k=>`<button type="button" class="chip" data-s="${k}">${k==="all"?"All":SEC[k].n}</button>`).join("")}</div><div class="tl"></div><button type="button" class="btn line" data-x>Cancel</button></div>`;
+  const list=()=>{el.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.s===sec));
+    el.querySelector(".tl").innerHTML=(none&&!q&&sec==="all"?row("","None"):"")+SECS.map(s=>{const it=Object.values(TOPICS).filter(x=>x.sec===s&&!x.oos&&(sec==="all"||sec===s)&&x.name.toLowerCase().includes(q));return it.length?`<div class="tph">${SEC[s].n}</div>${it.map(x=>row(x.id,x.name)).join("")}`:""}).join("")||`<p class="muted">No topic matches.</p>`};
+  el.addEventListener("click",e=>{const t=e.target;if(t===el||t.closest("[data-x]"))return el.remove();const c=t.closest(".chip");if(c){sec=c.dataset.s;return list()}const r=t.closest(".tr");if(r){inp.value=r.dataset.v;btn.firstChild.textContent=r.dataset.v?TOPICS[r.dataset.v].name:"None";el.remove()}});
+  el.querySelector("#tp-q").addEventListener("input",e=>{q=e.target.value.trim().toLowerCase();list()});
+  document.body.appendChild(el);list();
+}
+function slotCard(){const sl=S().slots||DEF_SLOTS,nm={wk:"Weekdays (Mon–Fri)",sat:"Saturday",sun:"Sunday"},v=x=>x==="24:00"?"00:00":x;
+  return `<section class="sec"><div class="sec-h"><h2>Free-time slots</h2></div><div class="card" style="padding:14px">${["wk","sat","sun"].map(g=>`<div class="field" style="margin-bottom:12px"><span>${nm[g]}</span>${sl[g].map((x,i)=>`<div style="display:flex;gap:8px;align-items:center"><input type="time" data-sl="${g}:${i}:0" value="${v(x[0])}"><span>to</span><input type="time" data-sl="${g}:${i}:1" value="${v(x[1])}"><button class="ibtn" data-a="slotdel" data-g="${g}" data-i="${i}" aria-label="Remove slot">×</button></div>`).join("")}<button class="btn line" data-a="slotadd" data-g="${g}">+ Add slot</button></div>`).join("")}<p class="xs muted">End 00:00 means midnight. For a one-off slot, use “Add a slot for this day” in Add a task.</p></div></section>`}
 function customOn(c, date) {
-  if (c.repeat === "daily") return date >= c.date && date <= (c.until || addDays(mondayOf(c.date), 6));
+  if (c.repeat === "daily") { const k = slotKey(date), g = c.grp || "all"; if ((g === "wk" && k !== "wk") || (g === "we" && k === "wk")) return false; return date >= c.date && date <= (c.until || addDays(mondayOf(c.date), 6)); }
   if (c.repeat === "weekly") return date >= c.date && dow(date) === dow(c.date) && date <= endDate();
   return c.date === date;
 }
@@ -1466,7 +1504,7 @@ function dayTasks(date) {
   for (const c of state.custom) if (customOn(c, date)) {
     const id = c.repeat === "once" ? c.id : `${c.id}@${date}`; const s = state.st[id];
     if (s && (s.rm || (s.to && s.to !== date))) continue;
-    out.push(withState({ ...c, id, src: "user" }, date));
+    const ct = { ...c, id, src: "user" }; if (c.pref) { const ps = prefSlot(date, c.pref); if (ps) { ct.slot = ps.s; ct.time = hm(ps.s); } } out.push(withState(ct, date));
   }
   const order = t => TIER_RANK[t.tier] * 1000 + (t.time ? parseInt(t.time) * 10 : 500) ;
   return out.sort((a, b) => order(a) - order(b));
@@ -2083,7 +2121,7 @@ function viewProgress() {
 function viewSettings() {
   const st = S(), last = state.backup.lastExport, ago = last ? diffDays(today(), last.slice(0, 10)) : null;
   const sync = Store.mode === "firebase" ? `Signed in as ${esc(Auth.name())}. Saved to the cloud, so signing in on your phone or laptop shows the same plan.` : Store.mode === "browser" ? "Saved in this browser only. Export a backup each week, and import it on your other device." : "This browser isn’t keeping your data. Export a backup before you close the page.";
-  return `<div class="page"><div class="page-h"><button class="ibtn" data-a="tab" data-k="today" aria-label="Back">${ic("back")}</button><h1>Settings</h1></div><div class="cols eq"><div class="main">
+  return `<div class="page"><div class="page-h"><button class="ibtn" data-a="tab" data-k="today" aria-label="Back">${ic("back")}</button><h1>Settings</h1></div><div class="cols eq"><div class="main">${slotCard()}
   ${typeof lookCard === "function" ? lookCard() : ""}
   <section class="sec"><div class="sec-h"><h2>Your plan</h2></div><div class="card">
     <button class="item" data-a="datesheet"><span class="mid"><b>Start date</b><span>${fmtDY(st.start)}${hasKickoff() ? `, then Week 1 on ${fmtD(anchorMonday())}` : ""}</span></span><span class="link">Change</span></button>
@@ -2115,6 +2153,10 @@ function render() {
   if (window.__afterRender) window.__afterRender();
 }
 document.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && e.target && e.target.id === "t-title") { const b = document.querySelector("#layer [data-a=saveadd], #layer [data-a=saveedit]"); if (b) { e.preventDefault(); b.click(); } } });
+document.addEventListener("input", e => { if (e.target.id === "t-min") refreshSlots(!ui.slotManual); });
+document.addEventListener("change", e => { const t = e.target, i = t.id;
+  if (i === "t-day") { ui.slotManual = false; refreshSlots(true); } else if (i === "t-rep") refreshSlots(!ui.slotManual); else if (i === "t-slot") { ui.slotManual = true; refreshSlots(false); }
+  else if (t.dataset && t.dataset.sl) { const [g, n, j] = t.dataset.sl.split(":"), v = t.value || "00:00"; (S().slots ||= JSON.parse(JSON.stringify(DEF_SLOTS)))[g][+n][+j] = (v === "00:00" && j === "1") ? "24:00" : v; commit(); } });
 document.addEventListener("toggle", e => { const d = e.target; if (d.matches && d.matches("details.more") && d.dataset.key) (ui.det ||= {})[d.dataset.key] = d.open; }, true);
 function paintLayer() {
   const L = document.getElementById("layer");
@@ -2124,7 +2166,7 @@ function paintLayer() {
     if (sc) sc.remove();
     L.insertAdjacentHTML("afterbegin", `<div class="scrim" data-a="scrim"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh"><div class="grab"></div><button class="sh-x" data-a="close" aria-label="Close">\u00d7</button>${ui.sheet.html}</div></div>`);
     L._sh = ui.sheet;
-    if (!ui.sheet.f) { ui.sheet.f = true; const f = L.querySelector(".sheet input:not([type=checkbox]), .sheet h2"); if (f) { if (f.tagName === "H2") f.setAttribute("tabindex", "-1"); f.focus({ preventScroll: true }); } }
+    if (!ui.sheet.f) { ui.sheet.f = true; const f = (matchMedia("(pointer:fine)").matches ? L.querySelector(".sheet input:not([type=checkbox])") : null) || L.querySelector(".sheet h2"); if (f) { if (f.tagName === "H2") f.setAttribute("tabindex", "-1"); f.focus({ preventScroll: true }); } }
   }
   let tn = L.querySelector(".toast");
   if (!ui.toast || ui.sheet) { if (tn) tn.remove(); }
@@ -2222,26 +2264,30 @@ function mistSheet(id) {
 function topicOptions(sel) { return SECS.map(s => `<optgroup label="${SEC[s].n}">${Object.values(TOPICS).filter(x => x.sec === s && !x.oos).map(x => `<option value="${x.id}" ${sel === x.id ? "selected" : ""}>${esc(x.name)}</option>`).join("")}</optgroup>`).join(""); }
 function addMistakeSheet() {
   sheet(`<h2 id="sh">Add a mistake</h2><p class="lead">It will show on every day that practises this topic.</p>
-    <label class="field">Topic<select id="x-topic">${topicOptions()}</select></label>
+    ${topicField("x-topic", Object.values(TOPICS).find(x => !x.oos).id, false)}
     <label class="field">What went wrong<input id="x-sub" placeholder="For example: successive discount order"></label>
     <div class="two"><label class="field">Wrong or skipped<select id="x-res"><option value="W">Wrong</option><option value="S">Skipped</option></select></label><label class="field">Question number<input id="x-q" inputmode="numeric" placeholder="Optional"></label></div>
     <div class="acts"><button class="btn line" data-a="close">Cancel</button><button class="btn main" data-a="savenewmist">Add mistake</button></div>`);
 }
 function addTaskSheet(d, t) {
-  const edit = !!t, from = d < today() ? d : today(), days = Array.from({ length: 29 }, (_, i) => addDays(from, i)); if (!days.includes(d)) days.push(d); days.sort(); t = t || { tier: "target", tag: "home", min: 20, kind: "practice" };
+  const edit = !!t, from = d < today() ? d : today(), days = Array.from({ length: 57 }, (_, i) => addDays(from, i)); if (!days.includes(d)) days.push(d); days.sort(); t = t || { tier: "target", tag: "home", min: 20, kind: "practice" };
   sheet(`<h2 id="sh">${edit ? "Edit task" : "Add a task"}</h2><p class="lead">${edit ? "The planner won’t move it after you edit it." : "Type it in one line. For example: 20 PYQs Quant, 30 min, Sunday"}</p>
     ${edit ? `<label class="field">Task<input id="t-title" value="${esc(t.title)}"></label>` : `<label class="field">Task<input id="t-title" data-c="quick" placeholder="20 PYQs Quant, 30 min, Sunday"></label>`}
     <div class="two"><label class="field">Day<select id="t-day">${days.map(x => `<option value="${x}" ${x === d ? "selected" : ""}>${fmtD(x)}</option>`).join("")}</select></label>
     <label class="field">Minutes<input id="t-min" type="number" inputmode="numeric" min="5" max="600" value="${t.min}"></label></div>
+    ${edit ? "" : `<div class="two"><label class="field">Time slot<select id="t-slot"></select></label><label class="field" id="t-pw" style="display:none">Time of day<select id="t-pref"><option value="m">Morning</option><option value="a">Afternoon / evening</option><option value="n">Night</option></select></label></div>
+    <details class="more"><summary>+ Add a slot for this day</summary><div class="two"><label class="field">From<input type="time" id="t-xs" value="18:00"></label><label class="field">To<input type="time" id="t-xe" value="19:00"></label></div><button type="button" class="btn line" data-a="xslot" style="margin-bottom:12px">Add slot</button></details>`}
     <details class="more"><summary>More options</summary>
       <div class="two"><label class="field">Where<select id="t-tag">${["commute", "break", "home"].map(k => `<option value="${k}" ${(t.tag === k || (t.tag === "fixed" && k === "home")) ? "selected" : ""}>${PLACE[k]}</option>`).join("")}</select></label>
       <label class="field">Show it on<select id="t-tier">${["floor", "target", "stretch"].map(k => `<option value="${k}" ${t.tier === k ? "selected" : ""}>${{ floor: "Every day, must-do", target: "Normal and free days", stretch: "Free days only" }[k]}</option>`).join("")}</select></label></div>
       ${edit ? "" : `<div class="two"><label class="field">Type<select id="t-kind">${Object.entries(KINDS).filter(([k]) => k !== "setup").map(([k, n]) => `<option value="${k}" ${t.kind === k ? "selected" : ""}>${n}</option>`).join("")}</select></label>
-      <label class="field">Repeat<select id="t-rep"><option value="once">No</option><option value="daily">Every day this week</option><option value="daily28">Every day for 4 weeks</option><option value="weekly">Every week</option></select></label></div>
-      <label class="field">Syllabus topic<select id="t-topic"><option value="">None</option>${topicOptions(t.topicId)}</select></label>`}
+      <label class="field">Repeat<select id="t-rep"><option value="once">No</option><option value="wk">Weekdays (Mon–Fri)</option><option value="we">Weekends (Sat + Sun)</option><option value="all">Every day</option><option value="weekly">Same day every week</option></select></label>
+      <label class="field">For<select id="t-for"><option value="week">This week</option><option value="4w">4 weeks</option><option value="plan">Whole plan</option></select></label></div>
+      ${topicField("t-topic", t.topicId, true)}`}
       <label class="field">Notes (optional)<textarea id="t-note" rows="3" placeholder="Links, chapter numbers, what “done” means">${esc(t.note || "")}</textarea></label>
     </details><p class="small red" id="t-over" hidden></p>
     <div class="acts"><button class="btn line" data-a="close">Cancel</button><button class="btn main" data-a="${edit ? "saveedit" : "saveadd"}" data-id="${esc(t.id || "")}" data-d="${d}">${edit ? "Save changes" : "Add task"}</button></div>`);
+  if (!edit) { ui.slotManual = false; refreshSlots(true); }
 }
 function mockSheet() {
   const d = weekInfo(ui.sel).w != null ? ui.sel : today();
@@ -2873,13 +2919,14 @@ function quizPickSheet(t, d) {
 
 /* ================= actions ================= */
 function parseQuick(s) {
-  const out = {}; const m = s.match(/(\d+)\s*(min|mins|minutes)\b/i); if (m) out.min = +m[1];
-  const h = s.match(/(\d+(?:\.\d+)?)\s*(hr|hrs|hour|hours)\b/i); if (h) out.min = Math.round(+h[1] * 60);
-  const di = DNL.findIndex(n => new RegExp("\\b" + n.slice(0, 3), "i").test(s)); if (di >= 0) out.dow = di;
-  if (/commute|audio|walk|listen/i.test(s)) out.tag = "commute"; else if (/break|phone/i.test(s)) out.tag = "break"; else out.tag = "home";
-  if (/pyq/i.test(s)) out.kind = "pyq"; else if (/revis/i.test(s)) out.kind = "revision"; else if (/mock|test/i.test(s)) out.kind = "mock"; else if (/speed|drill/i.test(s)) out.kind = "speed"; else if (/lecture|audio|video|learn/i.test(s)) out.kind = "concept";
+  const out = {}, hh = s.match(/(\d+(?:\.\d+)?)\s*(?:hr|hrs|hours?|h)\b/i), mm = s.match(/(\d+)\s*(?:min|mins|minutes)\b/i);
+  if (hh || mm) out.min = Math.round((hh ? +hh[1] * 60 : 0) + (mm ? +mm[1] : 0));
+  const di = DNL.findIndex(n => new RegExp("\\b(" + n + "|" + n.slice(0, 3) + ")\\b", "i").test(s)); if (di >= 0) out.dow = di;
+  if (/\b(commute|audio|walk|listen)\b/i.test(s)) out.tag = "commute"; else if (/\b(break|phone)\b/i.test(s)) out.tag = "break";
+  if (/\bpyq/i.test(s)) out.kind = "pyq"; else if (/\brevis/i.test(s)) out.kind = "revision"; else if (/\b(mock|tests?)\b/i.test(s)) out.kind = "mock"; else if (/\b(speed|drill)\b/i.test(s)) out.kind = "speed"; else if (/\b(lecture|audio|video|learn)/i.test(s)) out.kind = "concept";
   out.subj = /quant|math/i.test(s) ? "quant" : /english|vocab|grammar/i.test(s) ? "eng" : /\bga\b|gk|current/i.test(s) ? "ga" : /reason/i.test(s) ? "rsn" : "mixed";
-  out.title = s.split(",")[0].trim();
+  const HINT = /^\s*(\d+(?:\.\d+)?\s*(?:min|mins|minutes|hr|hrs|hours?|h)|(?:mon|tue|tues|wed|thu|thur|thurs|fri|sat|sun)(?:day|sday|nesday|urday)?)\s*$/i;
+  out.title = s.split(",").filter((p, i) => i === 0 || !HINT.test(p)).join(",").trim();
   return out;
 }
 function applyPlan() {
@@ -2958,23 +3005,38 @@ const A = {
   addtask: () => { if (!ensureWindowFor(ui.sel)) { toast(weekInfo(ui.sel).gap ? "This is a break week. Remove the break in Settings to add tasks." : "This day is before your plan start. Change the start date in Settings."); return; } if (!weekLocked(weekOfDate(ui.sel))) { commit(); addTaskSheet(ui.sel); } },
   saveadd: el => {
     const title = (V("t-title") || "").trim(); if (!title) { document.getElementById("t-title").focus(); return; }
-    const q = parseQuick(title), date = V("t-day"), min = clamp(+V("t-min") || 20, 5, 600), tier = V("t-tier"), topicId = V("t-topic") || null;
-    let repeat = V("t-rep"), until = null; if (repeat === "daily28") { repeat = "daily"; until = addDays(date, 27); }
+    const q = parseQuick(title), date = V("t-day"), min = +V("t-min"), tier = V("t-tier"), topicId = V("t-topic") || null;
+    if (!(min >= 5 && min <= 600)) { const o = document.getElementById("t-over"); o.hidden = false; o.textContent = "Minutes must be between 5 and 600."; return; }
+    const rp = V("t-rep"), fr = V("t-for"), repeat = rp === "once" ? "once" : rp === "weekly" ? "weekly" : "daily", grp = rp === "wk" ? "wk" : rp === "we" ? "we" : "all";
+    const until = repeat === "daily" ? (fr === "plan" ? endDate() : fr === "4w" ? addDays(date, 27) : null) : null;
     if (!ensureWindowFor(date) || (until && !ensureWindowFor(until))) { toast("That day is outside your plan. Change the plan dates in Settings."); return; }
-    const c = { id: "c-" + uid(), date, title: q.title || title, min, tag: V("t-tag"), tier, kind: V("t-kind"), repeat, topicId, subj: topicId ? TOPICS[topicId].sec : q.subj, q: {}, res: "", time: null, note: (V("t-note") || "").trim() };
+    const c = { id: "c-" + uid(), date, title: q.title || title, min, tag: V("t-tag"), tier, kind: V("t-kind"), repeat, grp, pref: repeat === "once" ? null : V("t-pref"), topicId, subj: topicId ? TOPICS[topicId].sec : q.subj, q: {}, res: "", time: null, note: (V("t-note") || "").trim() };
     if (until) c.until = until;
-    const s = daySummary(date), base = sum(genDay(date).tasks.filter(t => inTier(t, s.tier)), t => t.min), now = sum(s.active, t => t.min);
-    const over = now + (inTier(c, s.tier) ? min : 0) - base;
-    if (base > 0 && over > 0 && !el.dataset.ok) { const o = document.getElementById("t-over"); o.hidden = false; o.textContent = `${fmtD(date)} will be ${over} min longer than planned. Tap Add task again to keep it, or pick another day.`; el.dataset.ok = "1"; return; }
+    let msg = "Task added";
+    if (repeat === "once") {
+      const sl = slotsOf(date).find(s => s.s === +V("t-slot"));
+      if (sl) { const used = usedIn(date, sl.s), free = sl.e - sl.s - used; c.slot = sl.s; c.time = hm(sl.s + used);
+        if (free < min && !el.dataset.ok) { const o = document.getElementById("t-over"); o.hidden = false; o.textContent = `Only ${Math.max(0, free)} min free in this slot. Tap Add task again to keep it anyway.`; el.dataset.ok = "1"; return; } }
+    } else {
+      const bad = [], last = until || (repeat === "weekly" ? endDate() : addDays(mondayOf(date), 6));
+      for (let x = date, n = 0; x <= last && n < 200; x = addDays(x, 1), n++) if (customOn(c, x)) { const sl = prefSlot(x, c.pref); if (!sl || sl.e - sl.s - usedIn(x, sl.s) < min) bad.push(fmtD(x)); }
+      if (bad.length) msg = `Added. Tight on ${bad.slice(0, 3).join(", ")}${bad.length > 3 ? " +" + (bad.length - 3) + " more" : ""}`;
+    }
     state.custom.push(c); setSt(c.id, { pin: true }); logChange(`Added “${c.title}”`, `${fmtD(date)}, ${min} min`);
-    closeSheet(); toast("Task added"); commit();
+    closeSheet(); toast(msg); commit();
   },
   saveedit: el => {
-    const id = el.dataset.id, d = el.dataset.d, edit = { title: (V("t-title") || "").trim() || undefined, min: clamp(+V("t-min") || 10, 5, 600), tag: V("t-tag"), tier: V("t-tier"), note: (V("t-note") || "").trim() };
+    const id = el.dataset.id, d = el.dataset.d, edit = { title: (V("t-title") || "").trim(), min: clamp(+V("t-min") || 10, 5, 600), tag: V("t-tag"), tier: V("t-tier"), note: (V("t-note") || "").trim() };
+    if (!edit.title) { document.getElementById("t-title").focus(); return; }
+    const o0 = taskById(id, d); if (o0 && o0.tag === "fixed" && edit.tag === "home") delete edit.tag;
     const c = state.custom.find(x => x.id === id); if (c) Object.assign(c, edit); else setSt(id, { edit: { ...(state.st[id]?.edit || {}), ...edit }, pin: true });
     if (V("t-day") !== d) { if (!ensureWindowFor(V("t-day"))) { toast("That day is outside your plan."); return; } moveTask(id, d, V("t-day"), false); }
     logChange(`Edited “${edit.title}”`, ""); closeSheet(); toast("Changes saved"); commit();
   },
+  pickt: el => openTopicPicker(el.dataset.f, el.dataset.n === "1"),
+  xslot: () => { const d = V("t-day"), s = V("t-xs"), e = V("t-xe"); if (!s || !e) return; const m = (state.days[d] ||= {}); (m.xslots ||= []).push([s, e === "00:00" ? "24:00" : e]); persist(); ui.slotManual = false; refreshSlots(true); },
+  slotadd: el => { (S().slots ||= JSON.parse(JSON.stringify(DEF_SLOTS)))[el.dataset.g].push(["18:00", "19:00"]); commit(); },
+  slotdel: el => { (S().slots ||= JSON.parse(JSON.stringify(DEF_SLOTS)))[el.dataset.g].splice(+el.dataset.i, 1); commit(); },
   addmock: () => mockSheet(),
   savemock: () => {
     const sec = {}; for (const k of SECS) { const c = V(`k-${k}-c`), w = V(`k-${k}-w`); if (c !== "" || w !== "") sec[k] = { c: +c || 0, w: +w || 0 }; }
@@ -3013,6 +3075,7 @@ document.addEventListener("input", e => {
   const q = parseQuick(e.target.value), set = (id, v) => { const x = document.getElementById(id); if (x && v != null) x.value = v; };
   set("t-min", q.min); set("t-tag", q.tag); set("t-kind", q.kind);
   if (q.dow != null) { const o = [...document.getElementById("t-day").options].find(o => dow(o.value) === q.dow); if (o) set("t-day", o.value); }
+  refreshSlots(!ui.slotManual);
 });
 document.addEventListener("change", async e => {
   if (e.target.id !== "importfile") return; const file = e.target.files[0]; if (!file) return;
