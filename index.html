@@ -630,7 +630,8 @@ html[data-motion="off"] #boot{display:none}
 <style>.field .tbtn{min-height:48px;border:0;border-radius:var(--r-s);background:var(--surface);padding:0 14px;font-size:16px;font-weight:500;color:var(--text);width:100%;text-align:left;box-shadow:inset 0 0 0 1.5px var(--line);display:flex;justify-content:space-between;align-items:center}.field .tbtn::after{content:"▾";color:var(--text-3)}
 .tp{position:fixed;inset:0;z-index:80;background:rgba(2,6,23,.5);display:flex;align-items:flex-end;justify-content:center}.tp>div{background:var(--bg);color:var(--text);width:100%;max-width:560px;height:80dvh;border-radius:28px 28px 0 0;display:flex;flex-direction:column;padding:16px 18px calc(14px + env(safe-area-inset-bottom))}
 .tp .tpt{font-size:18px;margin-bottom:10px}.tp .chips{display:flex;gap:6px;overflow-x:auto;margin:10px 0;flex:none}.tp .chip{flex:none;min-height:36px;padding:0 14px;border-radius:99px;border:0;background:var(--surface);color:var(--text);box-shadow:inset 0 0 0 1.5px var(--line);font-weight:700}.tp .chip[aria-pressed=true]{background:var(--accent);color:var(--on-accent)}
-.tp .tl{flex:1;overflow:auto;margin-bottom:10px}.tp .tph{font-size:13px;font-weight:800;color:var(--text-3);padding:10px 4px 4px}.tp .tr{display:flex;justify-content:space-between;gap:8px;width:100%;min-height:48px;align-items:center;text-align:left;padding:8px 12px;border:0;border-radius:14px;background:none;font-size:15px;color:var(--text)}.tp .tr[aria-pressed=true]{background:var(--accent-weak);font-weight:800}</style>
+.tp .tl{flex:1;overflow:auto;margin-bottom:10px}.tp .tph{font-size:13px;font-weight:800;color:var(--text-3);padding:10px 4px 4px}.tp .tr{display:flex;justify-content:space-between;gap:8px;width:100%;min-height:48px;align-items:center;text-align:left;padding:8px 12px;border:0;border-radius:14px;background:none;font-size:15px;color:var(--text)}.tp .tr[aria-pressed=true]{background:var(--accent-weak);font-weight:800}
+select{pointer-events:none}.tp .cells{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}.tp .cells .chip{padding:0;display:flex;align-items:center;justify-content:center;text-align:center}.tp .tpd{font-size:34px;font-weight:800;text-align:center;margin:6px 0 10px}.tp .tb{flex:1;overflow:auto;margin-bottom:10px}.tp .tpm{font-size:16px}.tp .dg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}.tp .dg button{min-height:44px;border:0;border-radius:12px;background:none;color:var(--text);font-size:15px}.tp .dg button[aria-pressed=true]{background:var(--accent);color:var(--on-accent);font-weight:800}.tp .dg button:disabled{opacity:.35}.tp .dg .tdy{box-shadow:inset 0 0 0 1.5px var(--accent)}.tp .dg b{font-size:12px;color:var(--text-3)}</style>
 </head>
 <body>
 <div id="boot" aria-hidden="true"><div class="b-bar"><i id="b-bar"></i></div><div class="b-top"><span>CGL plan</span><span>Study planner</span></div><div class="b-txt">Your plan is <em>loading</em>.<br>One moment, please.</div><div class="b-count"><span id="b-n">000</span><i>%</i></div></div>
@@ -1478,6 +1479,49 @@ function openTopicPicker(id,none){
   el.querySelector("#tp-q").addEventListener("input",e=>{q=e.target.value.trim().toLowerCase();list()});
   document.body.appendChild(el);list();
 }
+function openList(title,items,cur,onPick){
+  items=items.map((x,i)=>({...x,i}));const el=document.createElement("div");el.className="tp";
+  const row=it=>`<button type="button" class="tr" data-i="${it.i}" aria-pressed="${it.v===cur}"><span>${esc(it.t)}</span>${it.v===cur?"<span>✓</span>":""}</button>`;
+  el.innerHTML=`<div role="dialog" aria-label="${esc(title)}"><b class="tpt">${esc(title)}</b>${items.length>12?'<input class="inp" id="tp-q" placeholder="Search" autocomplete="off">':""}<div class="tl"></div><button type="button" class="btn line" data-x>Cancel</button></div>`;
+  const list=(q="")=>{el.querySelector(".tl").innerHTML=items.filter(x=>x.t.toLowerCase().includes(q)).map(row).join("")||'<p class="muted">No match.</p>'};
+  el.addEventListener("click",e=>{const t=e.target;if(t===el||t.closest("[data-x]"))return el.remove();const r=t.closest(".tr");if(r){const it=items[+r.dataset.i];el.remove();onPick(it.v)}});
+  const qi=el.querySelector("#tp-q");if(qi)qi.addEventListener("input",()=>list(qi.value.trim().toLowerCase()));
+  document.body.appendChild(el);list();const a=el.querySelector('[aria-pressed="true"]');if(a)a.scrollIntoView({block:"center"});
+}
+function openSelect(s){const f=s.closest("label,.field"),title=[...f.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join("").trim()||(f.querySelector("span")||{}).textContent||"Choose";
+  openList(title,[...s.options].map(o=>({v:o.value,t:o.textContent.trim()})),s.value,v=>{s.value=v;s.dispatchEvent(new Event("input",{bubbles:true}));s.dispatchEvent(new Event("change",{bubbles:true}))})}
+function openTime(inp){
+  const v=(inp.value||"09:00").split(":").map(Number);let h=v[0]%12||12,m=v[1],pm=v[0]>=12;
+  const el=document.createElement("div");el.className="tp";
+  el.innerHTML=`<div role="dialog" aria-label="Pick a time"><b class="tpt">Pick a time</b><div class="tpd"></div><div class="tb"></div><div style="display:flex;gap:10px"><button type="button" class="btn line" data-x style="flex:1">Cancel</button><button type="button" class="btn main" data-set style="flex:1">Set</button></div></div>`;
+  const cells=(arr,sel,k)=>arr.map(x=>`<button type="button" class="chip" data-k="${k}" data-v="${x}" aria-pressed="${x===sel}">${k==="m"?pad(x):x}</button>`).join("");
+  const paint=()=>{el.querySelector(".tpd").textContent=`${h}:${pad(m)} ${pm?"PM":"AM"}`;
+    el.querySelector(".tb").innerHTML=`<div class="tph">Hour</div><div class="cells">${cells([1,2,3,4,5,6,7,8,9,10,11,12],h,"h")}</div><div class="tph">Minute</div><div class="cells">${cells([0,5,10,15,20,25,30,35,40,45,50,55],m,"m")}</div><div class="tph">AM / PM</div><div class="cells" style="grid-template-columns:1fr 1fr">${cells(["AM","PM"],pm?"PM":"AM","p")}</div>`};
+  el.addEventListener("click",e=>{const t=e.target;if(t===el||t.closest("[data-x]"))return el.remove();
+    if(t.closest("[data-set]")){inp.value=`${pad((h%12)+(pm?12:0))}:${pad(m)}`;inp.dispatchEvent(new Event("change",{bubbles:true}));return el.remove()}
+    const c=t.closest(".chip");if(c){const k=c.dataset.k;if(k==="h")h=+c.dataset.v;else if(k==="m")m=+c.dataset.v;else pm=c.dataset.v==="PM";paint()}});
+  document.body.appendChild(el);paint();
+}
+function openDate(inp){
+  const base=inp.value||today();let y=+base.slice(0,4),mo=+base.slice(5,7);
+  const el=document.createElement("div");el.className="tp";
+  el.innerHTML=`<div role="dialog" aria-label="Pick a date"><b class="tpt">Pick a date</b><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><button type="button" class="chip" data-n="-1">‹</button><b class="tpm"></b><button type="button" class="chip" data-n="1">›</button></div><div class="tb"></div><div style="display:flex;gap:10px"><button type="button" class="btn line" data-x style="flex:1">Cancel</button>${inp.id==="f-exam"?'<button type="button" class="btn line" data-clr style="flex:1">Clear</button>':""}</div></div>`;
+  const paint=()=>{const off=(new Date(y,mo-1,1).getDay()+6)%7,n=new Date(y,mo,0).getDate();
+    el.querySelector(".tpm").textContent=new Date(y,mo-1,1).toLocaleDateString("en-GB",{month:"long",year:"numeric"});
+    let h="<div class=dg>"+"MTWTFSS".split("").map(x=>`<b>${x}</b>`).join("")+"<span></span>".repeat(off);
+    for(let d=1;d<=n;d++){const iso=`${y}-${pad(mo)}-${pad(d)}`;h+=`<button type="button" data-d="${iso}" aria-pressed="${iso===inp.value}" class="${iso===today()?"tdy":""}" ${(inp.min&&iso<inp.min)||(inp.max&&iso>inp.max)?"disabled":""}>${d}</button>`}
+    el.querySelector(".tb").innerHTML=h+"</div>"};
+  el.addEventListener("click",e=>{const t=e.target;if(t===el||t.closest("[data-x]"))return el.remove();
+    if(t.closest("[data-clr]")){inp.value="";inp.dispatchEvent(new Event("change",{bubbles:true}));return el.remove()}
+    const n=t.closest("[data-n]");if(n){mo+=+n.dataset.n;if(mo<1){mo=12;y--}if(mo>12){mo=1;y++}return paint()}
+    const d=t.closest("[data-d]");if(d&&!d.disabled){inp.value=d.dataset.d;inp.dispatchEvent(new Event("change",{bubbles:true}));el.remove()}});
+  document.body.appendChild(el);paint();
+}
+document.addEventListener("click",e=>{const t=e.target;if(!t.closest||t.closest(".tp"))return;
+  const inp=t.closest("input[type=time],input[type=date]");if(inp){e.preventDefault();(inp.type==="time"?openTime:openDate)(inp);return}
+  const f=t.closest("label,.field"),s=f&&f.querySelector("select");if(s&&!s.disabled){e.preventDefault();openSelect(s)}},true);
+const roAll=()=>document.querySelectorAll("input[type=time]:not([readonly]),input[type=date]:not([readonly])").forEach(i=>i.readOnly=true);
+roAll();new MutationObserver(roAll).observe(document.documentElement,{childList:true,subtree:true});
 function slotCard(){const sl=S().slots||DEF_SLOTS,nm={wk:"Weekdays (Mon–Fri)",sat:"Saturday",sun:"Sunday"},v=x=>x==="24:00"?"00:00":x;
   return `<section class="sec"><div class="sec-h"><h2>Free-time slots</h2></div><div class="card" style="padding:14px">${["wk","sat","sun"].map(g=>`<div class="field" style="margin-bottom:12px"><span>${nm[g]}</span>${sl[g].map((x,i)=>`<div style="display:flex;gap:8px;align-items:center"><input type="time" data-sl="${g}:${i}:0" value="${v(x[0])}"><span>to</span><input type="time" data-sl="${g}:${i}:1" value="${v(x[1])}"><button class="ibtn" data-a="slotdel" data-g="${g}" data-i="${i}" aria-label="Remove slot">×</button></div>`).join("")}<button class="btn line" data-a="slotadd" data-g="${g}">+ Add slot</button></div>`).join("")}<p class="xs muted">End 00:00 means midnight. For a one-off slot, use “Add a slot for this day” in Add a task.</p></div></section>`}
 function customOn(c, date) {
@@ -2925,7 +2969,7 @@ function parseQuick(s) {
   if (/\b(commute|audio|walk|listen)\b/i.test(s)) out.tag = "commute"; else if (/\b(break|phone)\b/i.test(s)) out.tag = "break";
   if (/\bpyq/i.test(s)) out.kind = "pyq"; else if (/\brevis/i.test(s)) out.kind = "revision"; else if (/\b(mock|tests?)\b/i.test(s)) out.kind = "mock"; else if (/\b(speed|drill)\b/i.test(s)) out.kind = "speed"; else if (/\b(lecture|audio|video|learn)/i.test(s)) out.kind = "concept";
   out.subj = /quant|math/i.test(s) ? "quant" : /english|vocab|grammar/i.test(s) ? "eng" : /\bga\b|gk|current/i.test(s) ? "ga" : /reason/i.test(s) ? "rsn" : "mixed";
-  const HINT = /^\s*(\d+(?:\.\d+)?\s*(?:min|mins|minutes|hr|hrs|hours?|h)|(?:mon|tue|tues|wed|thu|thur|thurs|fri|sat|sun)(?:day|sday|nesday|urday)?)\s*$/i;
+  const HINT = /^\s*(\d+(?:\.\d+)?\s*(?:hr|hrs|hours?|h)(?:\s*\d+\s*(?:min|mins|minutes))?|\d+\s*(?:min|mins|minutes)|(?:mon|tue|tues|wed|thu|thur|thurs|fri|sat|sun)(?:day|sday|nesday|urday)?)\s*$/i;
   out.title = s.split(",").filter((p, i) => i === 0 || !HINT.test(p)).join(",").trim();
   return out;
 }
@@ -3221,7 +3265,7 @@ document.addEventListener("input", e => {
 document.addEventListener("change", async e => {
   const id = e.target.id;
   if (id === "f-subj") { ui.fsubj = e.target.value; const keep = { no: document.getElementById("f-no").value, name: document.getElementById("f-name").value }; render(); document.getElementById("f-no").value = keep.no; document.getElementById("f-name").value = keep.name; }
-  if (id === "f-exam") { document.getElementById("f-neg").value = EXAM_NEG[e.target.value]; }
+  if (id === "f-exam" && e.target.tagName === "SELECT" && document.getElementById("f-neg")) { document.getElementById("f-neg").value = EXAM_NEG[e.target.value]; }
   if (id === "scfile") {
     const f = e.target.files[0]; if (!f) return; e.target.value = "";
     try { snapshot("Importing from StudyCommand"); const r = importStudyCommand(readStudyCommandFile(await f.text()));
