@@ -599,7 +599,7 @@ html[data-motion="off"] #fx-glow{display:none}
 @media (max-width:340px){.hero .eyebrow{letter-spacing:.04em;font-size:11px}}
 
 .sheet{position:relative}
-.sh-x{position:absolute;top:10px;right:12px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:24px;line-height:1;color:var(--text-2);background:var(--surface-2);z-index:2}
+.sh-x{position:absolute;top:8px;right:10px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:24px;line-height:1;color:var(--text-2);background:var(--surface-2);z-index:2}
 .sheet>h2#sh{padding-right:44px}
 
 /* ===== theme picker ===== */
@@ -628,10 +628,10 @@ html[data-motion="off"] #boot{display:none}
 
 </style>
 <style>.field .tbtn{min-height:48px;border:0;border-radius:var(--r-s);background:var(--surface);padding:0 14px;font-size:16px;font-weight:500;color:var(--text);width:100%;text-align:left;box-shadow:inset 0 0 0 1.5px var(--line);display:flex;justify-content:space-between;align-items:center}.field .tbtn::after{content:"▾";color:var(--text-3)}
-.tp{position:fixed;inset:0;z-index:80;background:rgba(2,6,23,.5);display:flex;align-items:flex-end;justify-content:center}.tp>div{background:var(--bg);color:var(--text);width:100%;max-width:560px;height:80dvh;border-radius:28px 28px 0 0;display:flex;flex-direction:column;padding:16px 18px calc(14px + env(safe-area-inset-bottom))}
+.tp{position:fixed;inset:0;z-index:80;background:rgba(2,6,23,.5);display:flex;align-items:flex-end;justify-content:center}.tp>div{background:var(--bg);color:var(--text);width:100%;max-width:560px;max-height:min(80dvh,100%);border-radius:28px 28px 0 0;display:flex;flex-direction:column;padding:16px 18px calc(14px + env(safe-area-inset-bottom))}
 .tp .tpt{font-size:18px;margin-bottom:10px}.tp .chips{display:flex;gap:6px;overflow-x:auto;margin:10px 0;flex:none}.tp .chip{flex:none;min-height:36px;padding:0 14px;border-radius:99px;border:0;background:var(--surface);color:var(--text);box-shadow:inset 0 0 0 1.5px var(--line);font-weight:700}.tp .chip[aria-pressed=true]{background:var(--accent);color:var(--on-accent)}
-.tp .tl{flex:1;overflow:auto;margin-bottom:10px}.tp .tph{font-size:13px;font-weight:800;color:var(--text-3);padding:10px 4px 4px}.tp .tr{display:flex;justify-content:space-between;gap:8px;width:100%;min-height:48px;align-items:center;text-align:left;padding:8px 12px;border:0;border-radius:14px;background:none;font-size:15px;color:var(--text)}.tp .tr[aria-pressed=true]{background:var(--accent-weak);font-weight:800}
-select{pointer-events:none}.tp .cells{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}.tp .cells .chip{padding:0;display:flex;align-items:center;justify-content:center;text-align:center}.tp .tpd{font-size:34px;font-weight:800;text-align:center;margin:6px 0 10px}.tp .tb{flex:1;overflow:auto;margin-bottom:10px}.tp .tpm{font-size:16px}.tp .dg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}.tp .dg button{min-height:44px;border:0;border-radius:12px;background:none;color:var(--text);font-size:15px}.tp .dg button[aria-pressed=true]{background:var(--accent);color:var(--on-accent);font-weight:800}.tp .dg button:disabled{opacity:.35}.tp .dg .tdy{box-shadow:inset 0 0 0 1.5px var(--accent)}.tp .dg b{font-size:12px;color:var(--text-3)}</style>
+.tp>div.tall{height:min(80dvh,100%)}.tp>div:focus{outline:none}.tp button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}.tp .tl{flex:1 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain;margin-bottom:10px}.tp .tph{font-size:13px;font-weight:800;color:var(--text-3);padding:10px 4px 4px}.tp .tr{display:flex;justify-content:space-between;gap:8px;width:100%;min-height:48px;align-items:center;text-align:left;padding:8px 12px;border:0;border-radius:14px;background:none;font-size:15px;color:var(--text)}.tp .tr[aria-pressed=true]{background:var(--accent-weak);font-weight:800}
+select{pointer-events:none}.tp .cells{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}.tp .cells .chip{padding:0;display:flex;align-items:center;justify-content:center;text-align:center}.tp .tpd{font-size:34px;font-weight:800;text-align:center;margin:6px 0 10px}.tp .tb{flex:1 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain;margin-bottom:10px}.field .tbtn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}.field .tbtn::after{flex:none;margin-left:8px}.field:has(select){cursor:pointer}.tp .tpm{font-size:16px}.tp .dg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}.tp .dg button{min-height:44px;border:0;border-radius:12px;background:none;color:var(--text);font-size:15px}.tp .dg button[aria-pressed=true]{background:var(--accent);color:var(--on-accent);font-weight:800}.tp .dg button:disabled{opacity:.35}.tp .dg .tdy{box-shadow:inset 0 0 0 1.5px var(--accent)}.tp .dg b{font-size:12px;color:var(--text-3)}</style>
 </head>
 <body>
 <div id="boot" aria-hidden="true"><div class="b-bar"><i id="b-bar"></i></div><div class="b-top"><span>CGL plan</span><span>Study planner</span></div><div class="b-txt">Your plan is <em>loading</em>.<br>One moment, please.</div><div class="b-count"><span id="b-n">000</span><i>%</i></div></div>
@@ -1451,7 +1451,17 @@ const DEF_SLOTS={wk:[["07:00","09:00"],["21:00","23:30"]],sat:[["10:00","13:00"]
 const tm=s=>{const [h,m]=s.split(":").map(Number);return h*60+m};
 const hm=n=>pad(Math.floor(n/60)%24)+":"+pad(n%60);
 const slotKey=d=>{const w=dow(d);return w===6?"sat":w===0?"sun":"wk"};
-function slotsOf(d){return [...(S().slots||DEF_SLOTS)[slotKey(d)],...((state.days[d]||{}).xslots||[])].map(x=>{const s=tm(x[0]);let e=tm(x[1]);if(e===0)e=1440;return{s,e}}).filter(x=>x.e>x.s).sort((a,b)=>a.s-b.s)}
+function slotsOf(d){
+  const raw=x=>[...(S().slots||DEF_SLOTS)[slotKey(x)],...((state.days[x]||{}).xslots||[])].map(a=>({s:tm(a[0]),e:tm(a[1])})),out=[];
+  for(const r of raw(d)){if(r.e===r.s)continue;out.push({s:r.s,e:r.e>r.s?r.e:1440})}
+  for(const r of raw(addDays(d,-1)))if(r.e!==0&&r.e<r.s)out.push({s:0,e:r.e});
+  return out.sort((a,b)=>a.s-b.s)}
+function pickSlot(d){const v=V("t-slot");return v===""||v==null?null:slotsOf(d).find(s=>s.s===+v)||null}
+function migrateSlots(){let ch=false;
+  for(const c of state.custom){if(c.sm)continue;c.sm=1;ch=true;if(c.pref||c.slot!=null)continue;
+    const ss=slotsOf(c.date);if(!ss.length)continue;const f=ss.find(s=>s.e-s.s-usedIn(c.date,s.s)>=c.min)||ss[0];
+    if(c.repeat==="once")c.slot=f.s;else c.pref=f.s<720?"m":f.s<1200?"a":"n"}
+  if(ch)persist()}
 function prefSlot(d,p){return slotsOf(d).find(s=>p==="m"?s.s<720:p==="a"?s.s>=720&&s.s<1200:s.s>=1200)}
 function usedIn(d,s){return sum(dayTasks(d).filter(t=>t.slot===s&&t.status!=="skipped"),t=>t.min)}
 function nextRoom(d,min,skip){for(let i=0;i<=14;i++){const x=addDays(d,i);for(const s of slotsOf(x)){if(i===0&&s.s===skip)continue;if(s.e-s.s-usedIn(x,s.s)>=min)return `Room on ${fmtD(x)}, ${hm(s.s)}–${hm(s.e)}.`}}return "No slot has room in the next 2 weeks."}
@@ -1459,7 +1469,7 @@ function refreshSlots(auto){
   const sel=document.getElementById("t-slot");if(!sel)return;
   const d=V("t-day"),min=+V("t-min")||0,rep=V("t-rep")||"once",pw=document.getElementById("t-pw");
   pw.style.display=rep==="once"?"none":"";sel.parentNode.style.display=rep==="once"?"":"none";
-  const ss=slotsOf(d),fr=s=>s.e-s.s-usedIn(d,s.s);
+  const ss=slotsOf(d),own=ui.editTask&&ui.editTask.date===d?ui.editTask:null,fr=s=>s.e-s.s-usedIn(d,s.s)+(own&&own.slot===s.s?own.min:0);
   let cur=auto?null:+sel.value;
   if(cur==null||!ss.some(s=>s.s===cur)){const f=ss.find(s=>fr(s)>=min)||ss.slice().sort((a,b)=>fr(b)-fr(a))[0];cur=f?f.s:null}
   sel.innerHTML=ss.length?ss.map(s=>`<option value="${s.s}" ${s.s===cur?"selected":""}>${hm(s.s)}–${hm(s.e)} · ${Math.max(0,fr(s))} min left</option>`).join(""):`<option value="">No slots this day</option>`;
@@ -1468,25 +1478,27 @@ function refreshSlots(auto){
   if(rep==="once"&&sl&&fr(sl)<min){o.hidden=false;o.textContent=`Only ${Math.max(0,fr(sl))} min free in this slot. ${nextRoom(d,min,cur)}`}else o.hidden=true;
 }
 function topicField(id,sel,none){const nm=sel&&TOPICS[sel]?TOPICS[sel].name:"None";return `<div class="field"><span>${id==="t-topic"?"Syllabus topic":"Topic"}</span><input type="hidden" id="${id}" value="${esc(sel||"")}"><button type="button" class="tbtn" id="${id}-b" data-a="pickt" data-f="${id}" data-n="${none?1:0}"><span>${esc(nm)}</span></button></div>`}
+function tpOpen(el){document.body.appendChild(el);const d=el.firstElementChild;d.tabIndex=-1;d.focus({preventScroll:true});const vv=window.visualViewport;if(vv){const f=()=>{if(!el.isConnected)return vv.removeEventListener("resize",f);el.style.bottom=Math.max(0,innerHeight-vv.height-vv.offsetTop)+"px"};vv.addEventListener("resize",f)}}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){const q=document.querySelector(".tp");if(q){q.remove();e.stopImmediatePropagation();e.preventDefault()}}},true);
 function openTopicPicker(id,none){
   const inp=document.getElementById(id),btn=document.getElementById(id+"-b");let sec="all",q="";
   const el=document.createElement("div");el.className="tp";
   const row=(v,n)=>`<button type="button" class="tr" data-v="${v}" aria-pressed="${inp.value===v}"><span>${esc(n)}</span>${inp.value===v?"<span>✓</span>":""}</button>`;
-  el.innerHTML=`<div role="dialog" aria-label="Choose a topic"><b class="tpt">Choose a topic</b><input class="inp" id="tp-q" placeholder="Search topics" autocomplete="off"><div class="chips">${["all",...SECS].map(k=>`<button type="button" class="chip" data-s="${k}">${k==="all"?"All":SEC[k].n}</button>`).join("")}</div><div class="tl"></div><button type="button" class="btn line" data-x>Cancel</button></div>`;
+  el.innerHTML=`<div role="dialog" class="tall" aria-label="Choose a topic"><b class="tpt">Choose a topic</b><input class="inp" id="tp-q" placeholder="Search topics" autocomplete="off"><div class="chips">${["all",...SECS].map(k=>`<button type="button" class="chip" data-s="${k}">${k==="all"?"All":SEC[k].n}</button>`).join("")}</div><div class="tl"></div><button type="button" class="btn line" data-x>Cancel</button></div>`;
   const list=()=>{el.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.s===sec));
     el.querySelector(".tl").innerHTML=(none&&!q&&sec==="all"?row("","None"):"")+SECS.map(s=>{const it=Object.values(TOPICS).filter(x=>x.sec===s&&!x.oos&&(sec==="all"||sec===s)&&x.name.toLowerCase().includes(q));return it.length?`<div class="tph">${SEC[s].n}</div>${it.map(x=>row(x.id,x.name)).join("")}`:""}).join("")||`<p class="muted">No topic matches.</p>`};
   el.addEventListener("click",e=>{const t=e.target;if(t===el||t.closest("[data-x]"))return el.remove();const c=t.closest(".chip");if(c){sec=c.dataset.s;return list()}const r=t.closest(".tr");if(r){inp.value=r.dataset.v;btn.firstChild.textContent=r.dataset.v?TOPICS[r.dataset.v].name:"None";el.remove()}});
   el.querySelector("#tp-q").addEventListener("input",e=>{q=e.target.value.trim().toLowerCase();list()});
-  document.body.appendChild(el);list();
+  tpOpen(el);list();
 }
 function openList(title,items,cur,onPick){
   items=items.map((x,i)=>({...x,i}));const el=document.createElement("div");el.className="tp";
   const row=it=>`<button type="button" class="tr" data-i="${it.i}" aria-pressed="${it.v===cur}"><span>${esc(it.t)}</span>${it.v===cur?"<span>✓</span>":""}</button>`;
-  el.innerHTML=`<div role="dialog" aria-label="${esc(title)}"><b class="tpt">${esc(title)}</b>${items.length>12?'<input class="inp" id="tp-q" placeholder="Search" autocomplete="off">':""}<div class="tl"></div><button type="button" class="btn line" data-x>Cancel</button></div>`;
+  el.innerHTML=`<div role="dialog" class="${items.length>12?"tall":""}" aria-label="${esc(title)}"><b class="tpt">${esc(title)}</b>${items.length>12?'<input class="inp" id="tp-q" placeholder="Search" autocomplete="off">':""}<div class="tl"></div><button type="button" class="btn line" data-x>Cancel</button></div>`;
   const list=(q="")=>{el.querySelector(".tl").innerHTML=items.filter(x=>x.t.toLowerCase().includes(q)).map(row).join("")||'<p class="muted">No match.</p>'};
   el.addEventListener("click",e=>{const t=e.target;if(t===el||t.closest("[data-x]"))return el.remove();const r=t.closest(".tr");if(r){const it=items[+r.dataset.i];el.remove();onPick(it.v)}});
   const qi=el.querySelector("#tp-q");if(qi)qi.addEventListener("input",()=>list(qi.value.trim().toLowerCase()));
-  document.body.appendChild(el);list();const a=el.querySelector('[aria-pressed="true"]');if(a)a.scrollIntoView({block:"center"});
+  tpOpen(el);list();const a=el.querySelector('[aria-pressed="true"]');if(a)a.scrollIntoView({block:"center"});
 }
 function openSelect(s){const f=s.closest("label,.field"),title=[...f.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join("").trim()||(f.querySelector("span")||{}).textContent||"Choose";
   openList(title,[...s.options].map(o=>({v:o.value,t:o.textContent.trim()})),s.value,v=>{s.value=v;s.dispatchEvent(new Event("input",{bubbles:true}));s.dispatchEvent(new Event("change",{bubbles:true}))})}
@@ -1500,7 +1512,7 @@ function openTime(inp){
   el.addEventListener("click",e=>{const t=e.target;if(t===el||t.closest("[data-x]"))return el.remove();
     if(t.closest("[data-set]")){inp.value=`${pad((h%12)+(pm?12:0))}:${pad(m)}`;inp.dispatchEvent(new Event("change",{bubbles:true}));return el.remove()}
     const c=t.closest(".chip");if(c){const k=c.dataset.k;if(k==="h")h=+c.dataset.v;else if(k==="m")m=+c.dataset.v;else pm=c.dataset.v==="PM";paint()}});
-  document.body.appendChild(el);paint();
+  tpOpen(el);paint();
 }
 function openDate(inp){
   const base=inp.value||today();let y=+base.slice(0,4),mo=+base.slice(5,7);
@@ -1515,7 +1527,7 @@ function openDate(inp){
     if(t.closest("[data-clr]")){inp.value="";inp.dispatchEvent(new Event("change",{bubbles:true}));return el.remove()}
     const n=t.closest("[data-n]");if(n){mo+=+n.dataset.n;if(mo<1){mo=12;y--}if(mo>12){mo=1;y++}return paint()}
     const d=t.closest("[data-d]");if(d&&!d.disabled){inp.value=d.dataset.d;inp.dispatchEvent(new Event("change",{bubbles:true}));el.remove()}});
-  document.body.appendChild(el);paint();
+  tpOpen(el);paint();
 }
 document.addEventListener("click",e=>{const t=e.target;if(!t.closest||t.closest(".tp"))return;
   const inp=t.closest("input[type=time],input[type=date]");if(inp){e.preventDefault();(inp.type==="time"?openTime:openDate)(inp);return}
@@ -1523,7 +1535,7 @@ document.addEventListener("click",e=>{const t=e.target;if(!t.closest||t.closest(
 const roAll=()=>document.querySelectorAll("input[type=time]:not([readonly]),input[type=date]:not([readonly])").forEach(i=>i.readOnly=true);
 roAll();new MutationObserver(roAll).observe(document.documentElement,{childList:true,subtree:true});
 function slotCard(){const sl=S().slots||DEF_SLOTS,nm={wk:"Weekdays (Mon–Fri)",sat:"Saturday",sun:"Sunday"},v=x=>x==="24:00"?"00:00":x;
-  return `<section class="sec"><div class="sec-h"><h2>Free-time slots</h2></div><div class="card" style="padding:14px">${["wk","sat","sun"].map(g=>`<div class="field" style="margin-bottom:12px"><span>${nm[g]}</span>${sl[g].map((x,i)=>`<div style="display:flex;gap:8px;align-items:center"><input type="time" data-sl="${g}:${i}:0" value="${v(x[0])}"><span>to</span><input type="time" data-sl="${g}:${i}:1" value="${v(x[1])}"><button class="ibtn" data-a="slotdel" data-g="${g}" data-i="${i}" aria-label="Remove slot">×</button></div>`).join("")}<button class="btn line" data-a="slotadd" data-g="${g}">+ Add slot</button></div>`).join("")}<p class="xs muted">End 00:00 means midnight. For a one-off slot, use “Add a slot for this day” in Add a task.</p></div></section>`}
+  return `<section class="sec"><div class="sec-h"><h2>Free-time slots</h2></div><div class="card" style="padding:14px">${["wk","sat","sun"].map(g=>`<div class="field" style="margin-bottom:12px"><span>${nm[g]}</span>${sl[g].map((x,i)=>`<div style="display:flex;gap:8px;align-items:center"><input type="time" data-sl="${g}:${i}:0" value="${v(x[0])}"><span>to</span><input type="time" data-sl="${g}:${i}:1" value="${v(x[1])}"><button class="ibtn" data-a="slotdel" data-g="${g}" data-i="${i}" aria-label="Remove slot">×</button></div>`).join("")}<button class="btn line" data-a="slotadd" data-g="${g}">+ Add slot</button></div>`).join("")}<p class="xs muted">End 00:00 means midnight. An end earlier than the start (10 PM to 1 AM) runs into the next day. For a one-off slot, use “Add a slot for this day” in Add a task.</p></div></section>`}
 function customOn(c, date) {
   if (c.repeat === "daily") { const k = slotKey(date), g = c.grp || "all"; if ((g === "wk" && k !== "wk") || (g === "we" && k === "wk")) return false; return date >= c.date && date <= (c.until || addDays(mondayOf(c.date), 6)); }
   if (c.repeat === "weekly") return date >= c.date && dow(date) === dow(c.date) && date <= endDate();
@@ -1548,8 +1560,14 @@ function dayTasks(date) {
   for (const c of state.custom) if (customOn(c, date)) {
     const id = c.repeat === "once" ? c.id : `${c.id}@${date}`; const s = state.st[id];
     if (s && (s.rm || (s.to && s.to !== date))) continue;
-    const ct = { ...c, id, src: "user" }; if (c.pref) { const ps = prefSlot(date, c.pref); if (ps) { ct.slot = ps.s; ct.time = hm(ps.s); } } out.push(withState(ct, date));
+    const ct = { ...c, id, src: "user" }; out.push(withState(ct, date));
   }
+  { const sl = slotsOf(date), acc = {}, pf = p => sl.find(s => p === "m" ? s.s < 720 : p === "a" ? s.s >= 720 && s.s < 1200 : s.s >= 1200);
+    for (const t of out) { if (t.src !== "user") continue;
+      const ed = (state.st[t.id] || {}).edit || {}; let s = null;
+      if (t.pref && ed.slot == null) s = pf(t.pref); else if (t.slot != null) s = sl.find(x => x.s === t.slot);
+      if (!s && (t.pref || t.slot != null || t.movedFrom) && sl.length) s = sl.find(x => x.e - x.s - (acc[x.s] || 0) >= t.min) || sl[0];
+      if (s) { t.slot = s.s; t.time = hm(s.s + (acc[s.s] || 0)); acc[s.s] = (acc[s.s] || 0) + t.min; } else { t.slot = null; t.time = null; } } }
   const order = t => TIER_RANK[t.tier] * 1000 + (t.time ? parseInt(t.time) * 10 : 500) ;
   return out.sort((a, b) => order(a) - order(b));
 }
@@ -2186,7 +2204,7 @@ function viewSettings() {
 
 /* ================= render ================= */
 function render() {
-  movedIdx = null; if (typeof bankInit === "function") bankInit();
+  movedIdx = null; migrateSlots(); movedIdx = null; if (typeof bankInit === "function") bankInit();
   const sc = document.scrollingElement ? document.scrollingElement.scrollTop : 0;
   const v = { today: viewToday, week: viewWeek, tests: viewTests, review: viewReview, progress: viewProgress, settings: viewSettings }[ui.tab] || viewToday;
   document.getElementById("app").innerHTML = shell(v());
@@ -2200,7 +2218,11 @@ document.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey
 document.addEventListener("input", e => { if (e.target.id === "t-min") refreshSlots(!ui.slotManual); });
 document.addEventListener("change", e => { const t = e.target, i = t.id;
   if (i === "t-day") { ui.slotManual = false; refreshSlots(true); } else if (i === "t-rep") refreshSlots(!ui.slotManual); else if (i === "t-slot") { ui.slotManual = true; refreshSlots(false); }
-  else if (t.dataset && t.dataset.sl) { const [g, n, j] = t.dataset.sl.split(":"), v = t.value || "00:00"; (S().slots ||= JSON.parse(JSON.stringify(DEF_SLOTS)))[g][+n][+j] = (v === "00:00" && j === "1") ? "24:00" : v; commit(); } });
+  else if (t.dataset && t.dataset.sl) { const [g, n, j] = t.dataset.sl.split(":"), v = t.value || "00:00", arr = (S().slots ||= JSON.parse(JSON.stringify(DEF_SLOTS)))[g], pair = [...arr[+n]]; pair[+j] = (v === "00:00" && j === "1") ? "24:00" : v;
+    const nm = x => { const s = tm(x[0]), e = tm(x[1]); return [s, e > s ? e : e + 1440, e === s]; }, [a, b, same] = nm(pair);
+    if (same) { toast("Start and end can't be the same."); commit(); return; }
+    if (arr.some((x, k) => { if (k === +n) return false; const [c, d] = nm(x); return [-1440, 0, 1440].some(o => a < d + o && c + o < b); })) { toast("Slots can't overlap."); commit(); return; }
+    arr[+n] = pair; commit(); } });
 document.addEventListener("toggle", e => { const d = e.target; if (d.matches && d.matches("details.more") && d.dataset.key) (ui.det ||= {})[d.dataset.key] = d.open; }, true);
 function paintLayer() {
   const L = document.getElementById("layer");
@@ -2319,7 +2341,7 @@ function addTaskSheet(d, t) {
     ${edit ? `<label class="field">Task<input id="t-title" value="${esc(t.title)}"></label>` : `<label class="field">Task<input id="t-title" data-c="quick" placeholder="20 PYQs Quant, 30 min, Sunday"></label>`}
     <div class="two"><label class="field">Day<select id="t-day">${days.map(x => `<option value="${x}" ${x === d ? "selected" : ""}>${fmtD(x)}</option>`).join("")}</select></label>
     <label class="field">Minutes<input id="t-min" type="number" inputmode="numeric" min="5" max="600" value="${t.min}"></label></div>
-    ${edit ? "" : `<div class="two"><label class="field">Time slot<select id="t-slot"></select></label><label class="field" id="t-pw" style="display:none">Time of day<select id="t-pref"><option value="m">Morning</option><option value="a">Afternoon / evening</option><option value="n">Night</option></select></label></div>
+    ${`<div class="two" style="grid-template-columns:1fr"><label class="field">Time slot<select id="t-slot"></select></label><label class="field" id="t-pw" style="display:none">Time of day<select id="t-pref"><option value="m">Morning</option><option value="a">Afternoon / evening</option><option value="n">Night</option></select></label></div>
     <details class="more"><summary>+ Add a slot for this day</summary><div class="two"><label class="field">From<input type="time" id="t-xs" value="18:00"></label><label class="field">To<input type="time" id="t-xe" value="19:00"></label></div><button type="button" class="btn line" data-a="xslot" style="margin-bottom:12px">Add slot</button></details>`}
     <details class="more"><summary>More options</summary>
       <div class="two"><label class="field">Where<select id="t-tag">${["commute", "break", "home"].map(k => `<option value="${k}" ${(t.tag === k || (t.tag === "fixed" && k === "home")) ? "selected" : ""}>${PLACE[k]}</option>`).join("")}</select></label>
@@ -2331,7 +2353,8 @@ function addTaskSheet(d, t) {
       <label class="field">Notes (optional)<textarea id="t-note" rows="3" placeholder="Links, chapter numbers, what “done” means">${esc(t.note || "")}</textarea></label>
     </details><p class="small red" id="t-over" hidden></p>
     <div class="acts"><button class="btn line" data-a="close">Cancel</button><button class="btn main" data-a="${edit ? "saveedit" : "saveadd"}" data-id="${esc(t.id || "")}" data-d="${d}">${edit ? "Save changes" : "Add task"}</button></div>`);
-  if (!edit) { ui.slotManual = false; refreshSlots(true); }
+  ui.editTask = edit ? { date: d, slot: t.slot, min: t.min } : null; ui.slotManual = false; refreshSlots(true);
+  if (edit && t.slot != null) { const so = document.getElementById("t-slot"); if ([...so.options].some(o => +o.value === t.slot)) { so.value = t.slot; ui.slotManual = true; refreshSlots(false); } }
 }
 function mockSheet() {
   const d = weekInfo(ui.sel).w != null ? ui.sel : today();
@@ -3054,11 +3077,11 @@ const A = {
     const rp = V("t-rep"), fr = V("t-for"), repeat = rp === "once" ? "once" : rp === "weekly" ? "weekly" : "daily", grp = rp === "wk" ? "wk" : rp === "we" ? "we" : "all";
     const until = repeat === "daily" ? (fr === "plan" ? endDate() : fr === "4w" ? addDays(date, 27) : null) : null;
     if (!ensureWindowFor(date) || (until && !ensureWindowFor(until))) { toast("That day is outside your plan. Change the plan dates in Settings."); return; }
-    const c = { id: "c-" + uid(), date, title: q.title || title, min, tag: V("t-tag"), tier, kind: V("t-kind"), repeat, grp, pref: repeat === "once" ? null : V("t-pref"), topicId, subj: topicId ? TOPICS[topicId].sec : q.subj, q: {}, res: "", time: null, note: (V("t-note") || "").trim() };
+    const c = { id: "c-" + uid(), date, title: q.title || title, min, tag: V("t-tag"), tier, kind: V("t-kind"), repeat, grp, sm: 1, pref: repeat === "once" ? null : V("t-pref"), topicId, subj: topicId ? TOPICS[topicId].sec : q.subj, q: {}, res: "", time: null, note: (V("t-note") || "").trim() };
     if (until) c.until = until;
     let msg = "Task added";
     if (repeat === "once") {
-      const sl = slotsOf(date).find(s => s.s === +V("t-slot"));
+      const sl = pickSlot(date);
       if (sl) { const used = usedIn(date, sl.s), free = sl.e - sl.s - used; c.slot = sl.s; c.time = hm(sl.s + used);
         if (free < min && !el.dataset.ok) { const o = document.getElementById("t-over"); o.hidden = false; o.textContent = `Only ${Math.max(0, free)} min free in this slot. Tap Add task again to keep it anyway.`; el.dataset.ok = "1"; return; } }
     } else {
@@ -3072,14 +3095,18 @@ const A = {
   saveedit: el => {
     const id = el.dataset.id, d = el.dataset.d, edit = { title: (V("t-title") || "").trim(), min: clamp(+V("t-min") || 10, 5, 600), tag: V("t-tag"), tier: V("t-tier"), note: (V("t-note") || "").trim() };
     if (!edit.title) { document.getElementById("t-title").focus(); return; }
+    { const sl0 = pickSlot(V("t-day")); if (sl0) edit.slot = sl0.s; }
     const o0 = taskById(id, d); if (o0 && o0.tag === "fixed" && edit.tag === "home") delete edit.tag;
     const c = state.custom.find(x => x.id === id); if (c) Object.assign(c, edit); else setSt(id, { edit: { ...(state.st[id]?.edit || {}), ...edit }, pin: true });
     if (V("t-day") !== d) { if (!ensureWindowFor(V("t-day"))) { toast("That day is outside your plan."); return; } moveTask(id, d, V("t-day"), false); }
     logChange(`Edited “${edit.title}”`, ""); closeSheet(); toast("Changes saved"); commit();
   },
   pickt: el => openTopicPicker(el.dataset.f, el.dataset.n === "1"),
-  xslot: () => { const d = V("t-day"), s = V("t-xs"), e = V("t-xe"); if (!s || !e) return; const m = (state.days[d] ||= {}); (m.xslots ||= []).push([s, e === "00:00" ? "24:00" : e]); persist(); ui.slotManual = false; refreshSlots(true); },
-  slotadd: el => { (S().slots ||= JSON.parse(JSON.stringify(DEF_SLOTS)))[el.dataset.g].push(["18:00", "19:00"]); commit(); },
+  xslot: () => { const d = V("t-day"), s = V("t-xs"), e = V("t-xe"); if (!s || !e) return;
+    { const a = tm(s), e0 = tm(e), b = e0 > a ? e0 : e0 === 0 ? 1440 : e0 === a ? a : 1440, o = document.getElementById("t-over");
+      if (e0 === a) { o.hidden = false; o.textContent = "Start and end can't be the same."; return; }
+      if (slotsOf(d).some(x => a < x.e && x.s < b)) { o.hidden = false; o.textContent = "That overlaps an existing slot."; return; } } const m = (state.days[d] ||= {}); (m.xslots ||= []).push([s, e === "00:00" ? "24:00" : e]); persist(); ui.slotManual = false; refreshSlots(true); },
+  slotadd: el => { const arr = (S().slots ||= JSON.parse(JSON.stringify(DEF_SLOTS)))[el.dataset.g]; let h = 6; while (h < 23 && arr.some(x => h * 60 < tm(x[1]) && tm(x[0]) < (h + 1) * 60)) h++; arr.push([pad(h) + ":00", pad(h + 1) + ":00"]); commit(); },
   slotdel: el => { (S().slots ||= JSON.parse(JSON.stringify(DEF_SLOTS)))[el.dataset.g].splice(+el.dataset.i, 1); commit(); },
   addmock: () => mockSheet(),
   savemock: () => {
